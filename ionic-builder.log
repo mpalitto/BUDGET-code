@@ -1,0 +1,13 @@
+[2K[G[ANNOUNCE] Hi! Welcome to CLI 3.8.
+
+           We decided to merge core plugins back into the main ionic CLI package. The @ionic/cli-plugin-ionic-angular, @ionic/cli-plugin-ionic1, @ionic/cli-plugin-cordova, and @ionic/cli-plugin-gulp plugins have all been deprecated and won't be loaded by the CLI anymore. We listened to devs and determined they added unnecessary complexity. You can uninstall them from your project(s).
+           
+           No functionality was removed and all commands will continue working normally. You may wish to review the CHANGELOG: https://github.com/ionic-team/ionic-cli/blob/master/CHANGELOG.md#changelog
+           
+           Thanks,
+           The Ionic Team
+           
+           
+[2K[G
+? The Ionic CLI can automatically check for CLI updates in the background. Would
+ you like to enable this? (Y/n) [1A[32D[112C

@@ -1,0 +1,25 @@
+<ion-header>
+</ion-header>
+
+<ion-content padding>
+  <ion-item>
+    <ion-label stacked>What's your name?</ion-label>
+    <ion-input [(ngModel)]="member.name" placeholder="Member Name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label stacked>What's your privilege?</ion-label>
+    <ion-input [(ngModel)]="member.privilege" placeholder="Admin, Member"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label stacked>How good of a budgetter are you?</ion-label>
+    <ion-input [(ngModel)]="member.score" placeholder="score(1..10)"></ion-input>
+  </ion-item>
+  <button ion-button full (click)="addMember()">Add Member Info</button>
+ 
+  <ion-list>
+    <ion-item *ngFor="let member of members">
+      <h2>{{ member.name }}</h2>
+      <p>{{ member.privilege }} SCORE: {{ member.score }}/10</p>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,24 @@
+<ion-tabs>
+  <ion-tab (ionSelect)="page='Home'" [root]="tab1Root" tabTitle="Home" tabIcon="home" (click)="alert('Home')"></ion-tab>
+  <ion-tab (ionSelect)="page='About'" [root]="tab2Root" tabTitle="About" tabIcon="information-circle"></ion-tab>
+  <ion-tab (ionSelect)="page='Members'" [root]="tab3Root" tabTitle="Members" tabIcon="contacts"></ion-tab>
+</ion-tabs>
+
+<ion-item><ion-label>{{page}}</ion-label>
+  <ion-select interface="popover" [(ngModel)]="userSelection" (ionChange)="logout()" [selectOptions]="selectOptions"> 
+<ion-option [value]="item"  *ngFor="let item of ['LOGOUT'] ;let i = index" >
+       {{item}}
+    </ion-option>
+  </ion-select>
+</ion-item>
+<!--ion-select [(ngModel)]="userSelection" (click)="userSelect()">
+    <ion-option selected value=''>{{user}}</ion-option>
+    <ion-option value='log-out'>log-out</ion-option>
+</ion-select>
+
+<!--ion-buttons end>
+        {{user}}
+  <button ion-button (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+  </button>
+</ion-buttons-->
