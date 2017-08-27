@@ -41,12 +41,18 @@ export class DatabaseProvider {
             if (val) {
 	      alert('DB was already FILLED');
               this.databaseReady.next(true);
+              observer.next(true);
+	      observer.complete();
             } else {
 	      alert('FILLING the DB');
-              this.fillDatabase();
+	      this.fillDatabase().subscribe(val => {
+	        if (val) {
+	          alert('DB has been filled');
+		}
+                observer.next(true);
+	        observer.complete();
+	      });
             }
-            observer.next(true);
-	    observer.complete();
           });
 	  })
 	.catch(e => alert(e));
@@ -54,7 +60,8 @@ export class DatabaseProvider {
     });
   }
 
-  fillDatabase() {
+  fillDatabase(): Observable<any> {
+   return Observable.create(observer => {
     this.http.get('assets/dummyDump.sql')
       .map(res => res.text())
       .subscribe(sql => {
@@ -64,9 +71,12 @@ export class DatabaseProvider {
 	    alert("done importing: " + data);
             this.databaseReady.next(true);
             this.storage.set('database_filled', true);
+            observer.next(true);
+	    observer.complete();
           })
           .catch(e => alert('cought Eroor: ' + e));
       });
+   });
   }
  
 
@@ -86,6 +96,7 @@ export class DatabaseProvider {
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           members.push({ name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score });
+	  alert(JSON.stringify({ data: members}, null, 4));
         }
       }
       return members;

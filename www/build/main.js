@@ -171,13 +171,19 @@ var DatabaseProvider = (function () {
                         if (val) {
                             alert('DB was already FILLED');
                             _this.databaseReady.next(true);
+                            observer.next(true);
+                            observer.complete();
                         }
                         else {
                             alert('FILLING the DB');
-                            _this.fillDatabase();
+                            _this.fillDatabase().subscribe(function (val) {
+                                if (val) {
+                                    alert('DB has been filled');
+                                }
+                                observer.next(true);
+                                observer.complete();
+                            });
                         }
-                        observer.next(true);
-                        observer.complete();
                     });
                 })
                     .catch(function (e) { return alert(e); });
@@ -186,17 +192,21 @@ var DatabaseProvider = (function () {
     };
     DatabaseProvider.prototype.fillDatabase = function () {
         var _this = this;
-        this.http.get('assets/dummyDump.sql')
-            .map(function (res) { return res.text(); })
-            .subscribe(function (sql) {
-            alert(sql);
-            _this.sqlitePorter.importSqlToDb(_this.database, sql)
-                .then(function (data) {
-                alert("done importing: " + data);
-                _this.databaseReady.next(true);
-                _this.storage.set('database_filled', true);
-            })
-                .catch(function (e) { return alert('cought Eroor: ' + e); });
+        return __WEBPACK_IMPORTED_MODULE_8_rxjs_Observable__["Observable"].create(function (observer) {
+            _this.http.get('assets/dummyDump.sql')
+                .map(function (res) { return res.text(); })
+                .subscribe(function (sql) {
+                alert(sql);
+                _this.sqlitePorter.importSqlToDb(_this.database, sql)
+                    .then(function (data) {
+                    alert("done importing: " + data);
+                    _this.databaseReady.next(true);
+                    _this.storage.set('database_filled', true);
+                    observer.next(true);
+                    observer.complete();
+                })
+                    .catch(function (e) { return alert('cought Eroor: ' + e); });
+            });
         });
     };
     DatabaseProvider.prototype.addMember = function (name, privilege, score) {
@@ -214,6 +224,7 @@ var DatabaseProvider = (function () {
             if (data.rows.length > 0) {
                 for (var i = 0; i < data.rows.length; i++) {
                     members.push({ name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score });
+                    alert(JSON.stringify({ data: members }, null, 4));
                 }
             }
             return members;
@@ -556,7 +567,13 @@ AppModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* HttpModule */],
             __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["a" /* IonicStorageModule */].forRoot(),
             __WEBPACK_IMPORTED_MODULE_13_ionic2_super_tabs__["a" /* SuperTabsModule */],
-            __WEBPACK_IMPORTED_MODULE_8_ionic_angular__["i" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_9__app_component__["a" /* MyApp */])
+            __WEBPACK_IMPORTED_MODULE_8_ionic_angular__["i" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_9__app_component__["a" /* MyApp */], {}, {
+                links: [
+                    { loadChildren: '../pages/contact/contact.module#ContactPageModule', name: 'ContactPage', segment: 'contact', priority: 'low', defaultHistory: [] },
+                    { loadChildren: '../pages/login/login.module#LoginPageModule', name: 'LoginPage', segment: 'login', priority: 'low', defaultHistory: [] },
+                    { loadChildren: '../pages/register/register.module#RegisterPageModule', name: 'RegisterPage', segment: 'register', priority: 'low', defaultHistory: [] }
+                ]
+            })
         ],
         bootstrap: [__WEBPACK_IMPORTED_MODULE_8_ionic_angular__["g" /* IonicApp */]],
         entryComponents: [
