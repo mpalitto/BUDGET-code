@@ -17,22 +17,34 @@ export class LoginPage {
   constructor(private nav: NavController, private auth: AuthService, private alertCtrl: AlertController, private loadingCtrl: LoadingController) { }
  
   public createAccount() {
-    this.nav.push('RegisterPage');
+  // this.nav.push('RegisterPage');
+  // this.showLoading()
+    this.auth.register(this.registerCredentials).subscribe(success => {
+      if (success) {
+        this.showError("Success", "Account created.");
+        this.nav.push(TabsPage, {email: this.registerCredentials.email});
+      } else {
+        this.showError("Error", "Problem creating account.");
+      }
+    },
+      error => {
+        this.showError("Error", error);
+      });
   }
  
   public login() {
-    this.showLoading()
+  // this.showLoading()
     this.auth.login(this.registerCredentials).subscribe(confirmed => {
       //alert(confirmed);
       if (confirmed) {        
         //this.nav.setRoot(TabsPage);
         this.nav.push(TabsPage, {email: this.registerCredentials.email});
       } else {
-        this.showError("Access Denied");
+        this.showError("Error", "Access Denied");
       }
     },
       error => {
-        this.showError(error);
+        this.showError("Error", error);
       });
   }
  
@@ -44,11 +56,11 @@ export class LoginPage {
     this.loading.present();
   }
  
-  showError(text) {
-    this.loading.dismiss();
+  showError(title, text) {
+  // this.loading.dismiss();
  
     let alert = this.alertCtrl.create({
-      title: 'Fail',
+      title: title,
       subTitle: text,
       buttons: ['OK']
     });

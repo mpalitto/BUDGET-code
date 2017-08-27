@@ -16,7 +16,7 @@
         jumboMode="false"
         optimize="true"
         revision="25.0.0"
-        sha1="c469e0c11423be780117c5511eff08e1c161cb1d">
+        sha1="9d5b62915e96ff1e1b77c4c5563fe3d7e65b3216">
         <dex dex="/root/BUDGET/platforms/android/build/intermediates/pre-dexed/debug/CordovaLib-6.2.3-debug_48982098a762d0d485448809be645524ec1d14b9.jar" />
     </item>
 

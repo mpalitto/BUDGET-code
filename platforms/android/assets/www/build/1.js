@@ -1,14 +1,14 @@
 webpackJsonp([1],{
 
-/***/ 585:
+/***/ 586:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoginPageModule", function() { return LoginPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login__ = __webpack_require__(587);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login__ = __webpack_require__(588);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -38,13 +38,13 @@ LoginPageModule = __decorate([
 
 /***/ }),
 
-/***/ 587:
+/***/ 588:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__ = __webpack_require__(133);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tabs_tabs__ = __webpack_require__(267);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -71,11 +71,24 @@ var LoginPage = (function () {
         this.registerCredentials = { email: 'mpalitto@gmail.com', password: 'oettam68' };
     }
     LoginPage.prototype.createAccount = function () {
-        this.nav.push('RegisterPage');
+        var _this = this;
+        // this.nav.push('RegisterPage');
+        // this.showLoading()
+        this.auth.register(this.registerCredentials).subscribe(function (success) {
+            if (success) {
+                _this.showError("Success", "Account created.");
+                _this.nav.push(__WEBPACK_IMPORTED_MODULE_3__tabs_tabs__["a" /* TabsPage */], { email: _this.registerCredentials.email });
+            }
+            else {
+                _this.showError("Error", "Problem creating account.");
+            }
+        }, function (error) {
+            _this.showError("Error", error);
+        });
     };
     LoginPage.prototype.login = function () {
         var _this = this;
-        this.showLoading();
+        // this.showLoading()
         this.auth.login(this.registerCredentials).subscribe(function (confirmed) {
             //alert(confirmed);
             if (confirmed) {
@@ -83,10 +96,10 @@ var LoginPage = (function () {
                 _this.nav.push(__WEBPACK_IMPORTED_MODULE_3__tabs_tabs__["a" /* TabsPage */], { email: _this.registerCredentials.email });
             }
             else {
-                _this.showError("Access Denied");
+                _this.showError("Error", "Access Denied");
             }
         }, function (error) {
-            _this.showError(error);
+            _this.showError("Error", error);
         });
     };
     LoginPage.prototype.showLoading = function () {
@@ -96,10 +109,10 @@ var LoginPage = (function () {
         });
         this.loading.present();
     };
-    LoginPage.prototype.showError = function (text) {
-        this.loading.dismiss();
+    LoginPage.prototype.showError = function (title, text) {
+        // this.loading.dismiss();
         var alert = this.alertCtrl.create({
-            title: 'Fail',
+            title: title,
             subTitle: text,
             buttons: ['OK']
         });

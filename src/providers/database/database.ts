@@ -8,6 +8,7 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { Storage } from '@ionic/storage';
 
+import {Observable} from 'rxjs/Observable';
 /*
   Generated class for the DatabaseProvider provider.
 
@@ -20,22 +21,36 @@ export class DatabaseProvider {
   private databaseReady: BehaviorSubject<boolean>;
  
   constructor(public sqlitePorter: SQLitePorter, private storage: Storage, private sqlite: SQLite, private platform: Platform, private http: Http) {
+    this.prefillDB();
+  }
+
+  prefillDB(): Observable<any> {
     this.databaseReady = new BehaviorSubject(false);
+    return Observable.create(observer => {
+
     this.platform.ready().then(() => {
+      alert('Creating DB');
       this.sqlite.create({
         name: 'FamilyBudget.db',
         location: 'default'
       })
         .then((db: SQLiteObject) => {
+	  alert('DB has been opened');
           this.database = db;
           this.storage.get('database_filled').then(val => {
             if (val) {
+	      alert('DB was already FILLED');
               this.databaseReady.next(true);
             } else {
+	      alert('FILLING the DB');
               this.fillDatabase();
             }
+            observer.next(true);
+	    observer.complete();
           });
-        });
+	  })
+	.catch(e => alert(e));
+      });
     });
   }
 
@@ -43,12 +58,14 @@ export class DatabaseProvider {
     this.http.get('assets/dummyDump.sql')
       .map(res => res.text())
       .subscribe(sql => {
+        alert(sql);
         this.sqlitePorter.importSqlToDb(this.database, sql)
           .then(data => {
+	    alert("done importing: " + data);
             this.databaseReady.next(true);
             this.storage.set('database_filled', true);
           })
-          .catch(e => console.error(e));
+          .catch(e => alert('cought Eroor: ' + e));
       });
   }
  
