@@ -18,17 +18,17 @@ export class ContactPage {
     if (rdy) { //
         this.loadMemberData();
       } else {
-	alert("DB not ready");
+	// alert("DB not ready");
         this.loadMemberData();
       }
     })
   }
  
   loadMemberData() {
-    alert("loading member data");
+    // alert("loading member data");
     this.databaseprovider.getAllMembers().then(data => {
       this.members = data;
-      alert(data);
+      // alert(data);
     })
   }
  

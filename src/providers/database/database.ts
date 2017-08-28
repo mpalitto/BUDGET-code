@@ -29,25 +29,25 @@ export class DatabaseProvider {
     return Observable.create(observer => {
 
     this.platform.ready().then(() => {
-      alert('Creating DB');
+      // alert('Creating DB');
       this.sqlite.create({
         name: 'FamilyBudget.db',
         location: 'default'
       })
         .then((db: SQLiteObject) => {
-	  alert('DB has been opened');
+	  // alert('DB has been opened');
           this.database = db;
           this.storage.get('database_filled').then(val => {
             if (val) {
-	      alert('DB was already FILLED');
+	      // alert('DB was already FILLED');
               this.databaseReady.next(true);
               observer.next(true);
 	      observer.complete();
             } else {
-	      alert('FILLING the DB');
+	      // alert('FILLING the DB');
 	      this.fillDatabase().subscribe(val => {
 	        if (val) {
-	          alert('DB has been filled');
+	          // alert('DB has been filled');
 		}
                 observer.next(true);
 	        observer.complete();
@@ -65,10 +65,10 @@ export class DatabaseProvider {
     this.http.get('assets/dummyDump.sql')
       .map(res => res.text())
       .subscribe(sql => {
-        alert(sql);
+        // alert(sql);
         this.sqlitePorter.importSqlToDb(this.database, sql)
           .then(data => {
-	    alert("done importing: " + data);
+	    // alert("done importing: " + data);
             this.databaseReady.next(true);
             this.storage.set('database_filled', true);
             observer.next(true);
@@ -96,7 +96,7 @@ export class DatabaseProvider {
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           members.push({ name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score });
-	  alert(JSON.stringify({ data: members}, null, 4));
+	  // alert(JSON.stringify({ data: members}, null, 4));
         }
       }
       return members;

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController,NavParams } from 'ionic-angular';
-import { AboutPage } from '../about/about';
-import { ContactPage } from '../contact/contact';
-import { HomePage } from '../home/home';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+// import { AboutPage } from '../about/about';
+// import { ContactPage } from '../contact/contact';
+// import { HomePage } from '../home/home';
 import { AuthService } from '../../providers/auth-service/auth-service';
 
-
+@IonicPage({name: "TabsPage"})
 @Component({
   templateUrl: 'tabs.html'
 })
@@ -18,9 +18,9 @@ export class TabsPage {
       title: 'Are you sure?' 
   }
 
-  tab1Root = HomePage;
-  tab2Root = AboutPage;
-  tab3Root = ContactPage;
+  tab1Root = 'HomePage';
+  tab2Root = 'AboutPage';
+  tab3Root = 'ContactPage';
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthService) { 
     this.user = navParams.get('email');
