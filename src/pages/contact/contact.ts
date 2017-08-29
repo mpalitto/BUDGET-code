@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { DatabaseProvider } from './../../providers/database/database';
+import { IonicPage } from 'ionic-angular';
 
+@IonicPage()
 @Component({
   selector: 'page-contact',
   templateUrl: 'contact.html'
@@ -11,17 +13,22 @@ export class ContactPage {
   members = [];
  
   constructor(public navCtrl: NavController, private databaseprovider: DatabaseProvider) {
-    this.databaseprovider.getDatabaseState().subscribe(rdy => {
-      if (rdy) {
+  //this.databaseprovider.getDatabaseState().subscribe(rdy => {
+    this.databaseprovider.prefillDB().subscribe(rdy => {
+    if (rdy) { //
+        this.loadMemberData();
+      } else {
+	// alert("DB not ready");
         this.loadMemberData();
       }
     })
   }
  
   loadMemberData() {
+    // alert("loading member data");
     this.databaseprovider.getAllMembers().then(data => {
       this.members = data;
-      //alert(data);
+      // alert(data);
     })
   }
  

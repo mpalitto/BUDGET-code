@@ -79,6 +79,7 @@
     </platform>
     <allow-navigation href="http://172.17.0.2:8100" />
     <allow-navigation href="http://localhost:8100" />
+    <allow-navigation href="http://localhost:8101" />
     <engine name="android" spec="^6.2.3" />
     <engine name="browser" spec="^4.1.0" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />

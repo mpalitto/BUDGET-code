@@ -36,6 +36,7 @@
     <allow-intent href="geo:*" />
     <allow-navigation href="http://172.17.0.2:8100" />
     <allow-navigation href="http://localhost:8100" />
+    <allow-navigation href="http://localhost:8101" />
     <allow-intent href="market:*" />
     <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
     <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />

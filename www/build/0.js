@@ -1,14 +1,14 @@
 webpackJsonp([0],{
 
-/***/ 586:
+/***/ 577:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RegisterPageModule", function() { return RegisterPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TabsPageModule", function() { return TabsPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__register__ = __webpack_require__(588);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tabs__ = __webpack_require__(583);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,34 +18,32 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var RegisterPageModule = (function () {
-    function RegisterPageModule() {
+var TabsPageModule = (function () {
+    function TabsPageModule() {
     }
-    return RegisterPageModule;
+    return TabsPageModule;
 }());
-RegisterPageModule = __decorate([
+TabsPageModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["L" /* NgModule */])({
-        declarations: [
-            __WEBPACK_IMPORTED_MODULE_2__register__["a" /* RegisterPage */],
-        ],
-        imports: [
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__register__["a" /* RegisterPage */]),
-        ],
+        declarations: [__WEBPACK_IMPORTED_MODULE_2__tabs__["a" /* TabsPage */]],
+        imports: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__tabs__["a" /* TabsPage */])],
+        entryComponents: [__WEBPACK_IMPORTED_MODULE_2__tabs__["a" /* TabsPage */]]
+        //exports: [TabsPage]
     })
-], RegisterPageModule);
+], TabsPageModule);
 
-//# sourceMappingURL=register.module.js.map
+//# sourceMappingURL=tabs.module.js.map
 
 /***/ }),
 
-/***/ 588:
+/***/ 583:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RegisterPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TabsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__ = __webpack_require__(133);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__ = __webpack_require__(253);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -57,58 +55,43 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+// import { AboutPage } from '../about/about';
+// import { ContactPage } from '../contact/contact';
+// import { HomePage } from '../home/home';
 
-var RegisterPage = (function () {
-    function RegisterPage(nav, auth, alertCtrl) {
-        this.nav = nav;
+var TabsPage = (function () {
+    function TabsPage(navCtrl, navParams, auth) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
         this.auth = auth;
-        this.alertCtrl = alertCtrl;
-        this.createSuccess = false;
-        this.registerCredentials = { email: '', password: '' };
+        this.page = "Home";
+        this.userSelection = "";
+        this.user = "";
+        this.selectOptions = {
+            title: 'Are you sure?'
+        };
+        this.tab1Root = 'HomePage';
+        this.tab2Root = 'AboutPage';
+        this.tab3Root = 'ContactPage';
+        this.user = navParams.get('email');
     }
-    RegisterPage.prototype.register = function () {
+    TabsPage.prototype.logout = function () {
         var _this = this;
-        this.auth.register(this.registerCredentials).subscribe(function (success) {
-            if (success) {
-                _this.createSuccess = true;
-                _this.showPopup("Success", "Account created.");
-            }
-            else {
-                _this.showPopup("Error", "Problem creating account.");
-            }
-        }, function (error) {
-            _this.showPopup("Error", error);
+        //alert('logging OUT');
+        this.auth.logout().subscribe(function (succ) {
+            _this.navCtrl.popToRoot();
         });
     };
-    RegisterPage.prototype.showPopup = function (title, text) {
-        var _this = this;
-        var alert = this.alertCtrl.create({
-            title: title,
-            subTitle: text,
-            buttons: [
-                {
-                    text: 'OK',
-                    handler: function (data) {
-                        if (_this.createSuccess) {
-                            _this.nav.popToRoot();
-                        }
-                    }
-                }
-            ]
-        });
-        alert.present();
-    };
-    return RegisterPage;
+    return TabsPage;
 }());
-RegisterPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* IonicPage */])(),
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-register',template:/*ion-inline-start:"/root/BUDGET/src/pages/register/register.html"*/'<ion-header>\n  <ion-navbar color="dark">\n    <ion-title>Register</ion-title>\n  </ion-navbar>\n</ion-header>\n \n<ion-content class="login-content" padding>\n  <div class="login-box">\n    \n    <form (ngSubmit)="register()" #registerForm="ngForm">\n      <ion-row>\n        <ion-col>\n          <ion-list inset>\n            \n            <ion-item>\n              <ion-input type="text" placeholder="Email" name="email" [(ngModel)]="registerCredentials.email" required></ion-input>\n            </ion-item>\n            \n            <ion-item>\n              <ion-input type="password" placeholder="Password" name="password" [(ngModel)]="registerCredentials.password" required></ion-input>\n            </ion-item>\n            \n          </ion-list>\n        </ion-col>\n      </ion-row>\n      \n      <ion-row>\n        <ion-col class="signup-col">\n          <button ion-button class="submit-btn" full type="submit" [disabled]="!registerForm.form.valid">Register</button>\n        </ion-col>\n      </ion-row>\n      \n    </form>\n  </div>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/register/register.html"*/,
+TabsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])({ name: "TabsPage" }),
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/root/BUDGET/src/pages/tabs/tabs.html"*/'<ion-tabs>\n  <ion-tab (ionSelect)="page=\'Home\'" [root]="tab1Root" tabTitle="Home" tabIcon="home" (click)="alert(\'Home\')"></ion-tab>\n  <ion-tab (ionSelect)="page=\'About\'" [root]="tab2Root" tabTitle="About" tabIcon="information-circle"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Members\'" [root]="tab3Root" tabTitle="Members" tabIcon="contacts"></ion-tab>\n</ion-tabs>\n\n<ion-item><ion-label>{{page}}</ion-label>\n  <ion-select interface="popover" [(ngModel)]="userSelection" (ionChange)="logout()" [selectOptions]="selectOptions"> \n<ion-option [value]="item"  *ngFor="let item of [\'LOGOUT\'] ;let i = index" >\n       {{item}}\n    </ion-option>\n  </ion-select>\n</ion-item>\n<!--ion-select [(ngModel)]="userSelection" (click)="userSelect()">\n    <ion-option selected value=\'\'>{{user}}</ion-option>\n    <ion-option value=\'log-out\'>log-out</ion-option>\n</ion-select>\n\n<!--ion-buttons end>\n        {{user}}\n  <button ion-button (click)="logout()">\n        <ion-icon name="log-out"></ion-icon>\n  </button>\n</ion-buttons-->\n'/*ion-inline-end:"/root/BUDGET/src/pages/tabs/tabs.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
-], RegisterPage);
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__["a" /* AuthService */]])
+], TabsPage);
 
-//# sourceMappingURL=register.js.map
+//# sourceMappingURL=tabs.js.map
 
 /***/ })
 
