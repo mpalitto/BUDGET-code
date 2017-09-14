@@ -39,5 +39,16 @@ export class ContactPage {
     });
     this.member = {};
   }
+  deleteMember(name) {
+  alert("delete member "+ name);
+    this.databaseprovider.deleteMember(name)
+    .then(data => {
+      this.loadMemberData();
+    });
+    this.member = {};
+  }
+
+
+
 
 }
