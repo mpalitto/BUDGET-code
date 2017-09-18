@@ -24,11 +24,30 @@ export class TabsPage {
   tab3Root = 'ContactPage';
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthService, public WS: SocketProvider) {
+
     this.user = navParams.get('email');
-    let USERdata = {
-      userID: this.user
+
+    // send invite
+    let invite = {
+      FROM: this.user,
+      FOR: "wife@gmail.com",
+      GROUP: "NEW-GROUP"
     }
-    WS.send('anyInvites', USERdata); //request for any new invitation to server
+    WS.send('invite', invite); //request for any new invitation to server
+
+    // send invite
+    invite = {
+      FROM: "nicolo@gmail.com",
+      FOR: "mpalitto@gmail.com",
+      GROUP: "NEW-GROUP"
+    }
+    WS.send('invite', invite); //request for any new invitation to server
+
+    // send anyInvites query
+    let userID = {
+      userID: this.user,
+    }
+    WS.send('anyInvites', userID); //request for any new invitation to server
 
     let data = {
       from: 'Matteo',

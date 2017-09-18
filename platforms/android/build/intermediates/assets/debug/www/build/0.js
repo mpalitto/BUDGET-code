@@ -77,10 +77,18 @@ var TabsPage = (function () {
         this.tab2Root = 'AboutPage';
         this.tab3Root = 'ContactPage';
         this.user = navParams.get('email');
-        var USERdata = {
-            userID: this.user
+        // send invite
+        var invite = {
+            userID: this.user,
+            FOR: "wife@gmail.com",
+            group: "NEW-GROUP"
         };
-        WS.send('anyInvites', USERdata); //request for any new invitation to server
+        WS.send('invite', invite); //request for any new invitation to server
+        // send anyInvites query
+        var userID = {
+            userID: this.user,
+        };
+        WS.send('anyInvites', userID); //request for any new invitation to server
         var data = {
             from: 'Matteo',
             to: 'all',

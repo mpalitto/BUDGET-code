@@ -331,9 +331,9 @@ var SocketProvider = (function () {
         this.socket = __WEBPACK_IMPORTED_MODULE_3_socket_io_client__["connect"](this.socketHost);
         this.socket.on('connect', function () {
             alert('socket connection SUCCESS ' + _this.socket.connected);
-            _this.socket.on('message', function (msg) {
-                alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
-            });
+            //this.socket.on('message', (msg) => {
+            //  alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
+            //});
             //    this.send();
         });
     }
@@ -344,9 +344,10 @@ var SocketProvider = (function () {
 }());
 SocketProvider = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]) === "function" && _a || Object])
 ], SocketProvider);
 
+var _a;
 //# sourceMappingURL=socket.js.map
 
 /***/ }),

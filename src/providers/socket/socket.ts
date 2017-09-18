@@ -22,9 +22,9 @@ export class SocketProvider {
     this.socket = io.connect(this.socketHost);
     this.socket.on('connect', () => {
       alert('socket connection SUCCESS '+ this.socket.connected);
-      this.socket.on('message', (msg) => {
-        alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
-      });
+      //this.socket.on('message', (msg) => {
+      //  alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
+      //});
 //    this.send();
     });
   }
