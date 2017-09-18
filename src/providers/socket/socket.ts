@@ -14,13 +14,14 @@ import * as io from 'socket.io-client';
 @Injectable()
 export class SocketProvider {
 
-  socketHost: string = "http://192.168.1.45:3000";
+  socketHost: string = "http://192.168.1.60:3000";
   socket: any;
 
   constructor(public http: Http) {
     alert('Hello SocketProvider Provider');
     this.socket = io.connect(this.socketHost);
     this.socket.on('connect', () => {
+      alert('socket connection SUCCESS '+ this.socket.connected);
       this.socket.on('message', (msg) => {
         alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
       });
@@ -28,14 +29,8 @@ export class SocketProvider {
     });
   }
 
-  public send(data) {
-//    let data = {
-//      from: 'Matteo',
-//      to  : 'all',
-//      cmd : "add-transaction: { cat: 'cibo', amount: -100 }"
-//    };
-
-      this.socket.emit('message', data);
+  public send(cmd, data) {
+      this.socket.emit(cmd, data);
   }
 
 }

@@ -25,12 +25,17 @@ export class TabsPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private auth: AuthService, public WS: SocketProvider) {
     this.user = navParams.get('email');
+    let USERdata = {
+      userID: this.user
+    }
+    WS.send('anyInvites', USERdata); //request for any new invitation to server
+
     let data = {
       from: 'Matteo',
       to  : 'all',
       cmd : "Hi"
-     };
-     WS.send(data);
+    };
+    WS.send('message', data);
   }
 
   public logout() {

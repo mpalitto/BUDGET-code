@@ -77,7 +77,16 @@ var TabsPage = (function () {
         this.tab2Root = 'AboutPage';
         this.tab3Root = 'ContactPage';
         this.user = navParams.get('email');
-        //WS.send();
+        var USERdata = {
+            userID: this.user
+        };
+        WS.send('anyInvites', USERdata); //request for any new invitation to server
+        var data = {
+            from: 'Matteo',
+            to: 'all',
+            cmd: "Hi"
+        };
+        WS.send('message', data);
     }
     TabsPage.prototype.logout = function () {
         var _this = this;
