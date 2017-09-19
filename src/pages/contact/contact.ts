@@ -11,7 +11,6 @@ import { IonicPage } from 'ionic-angular';
 export class ContactPage {
   member = {};
   members = [];
- 
   constructor(public navCtrl: NavController, private databaseprovider: DatabaseProvider) {
   //this.databaseprovider.getDatabaseState().subscribe(rdy => {
     this.databaseprovider.prefillDB().subscribe(rdy => {
@@ -23,7 +22,6 @@ export class ContactPage {
       }
     })
   }
- 
   loadMemberData() {
     // alert("loading member data");
     this.databaseprovider.getAllMembers().then(data => {
@@ -31,7 +29,6 @@ export class ContactPage {
       // alert(data);
     })
   }
- 
   addMember() {
     this.databaseprovider.addMember(this.member['name'], this.member['privilege'], parseInt(this.member['score']))
     .then(data => {
@@ -40,15 +37,11 @@ export class ContactPage {
     this.member = {};
   }
   deleteMember(name) {
-  alert("delete member "+ name);
+  alert("delete member contact.ts "+ name);
     this.databaseprovider.deleteMember(name)
     .then(data => {
       this.loadMemberData();
     });
     this.member = {};
   }
-
-
-
-
 }

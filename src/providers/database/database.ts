@@ -93,11 +93,9 @@ export class DatabaseProvider {
   deleteMember(name) {
  
     let data = [name]
-// alert("delete il record: " + data);
-    return this.database.executeSql("select * FROM member WHERE name='Test'", []).then(data => {
-       alert("delete il record: " + JSON.stringify(data));
-return data;
-
+alert("deletemember: " + name);
+    return this.database.executeSql("delete FROM member WHERE member.name=?", data).then(data => {
+   return data;
     }, err => {
        alert("errore: " + JSON.stringify(err));
 
