@@ -331,9 +331,9 @@ var SocketProvider = (function () {
         this.socket = __WEBPACK_IMPORTED_MODULE_3_socket_io_client__["connect"](this.socketHost);
         this.socket.on('connect', function () {
             alert('socket connection SUCCESS ' + _this.socket.connected);
-            _this.socket.on('message', function (msg) {
-                alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
-            });
+            //this.socket.on('message', (msg) => {
+            //  alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
+            //});
             //    this.send();
         });
     }

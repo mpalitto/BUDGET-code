@@ -79,9 +79,16 @@ var TabsPage = (function () {
         this.user = navParams.get('email');
         // send invite
         var invite = {
-            userID: this.user,
+            FROM: this.user,
             FOR: "wife@gmail.com",
-            group: "NEW-GROUP"
+            GROUP: "NEW-GROUP"
+        };
+        WS.send('invite', invite); //request for any new invitation to server
+        // send invite
+        invite = {
+            FROM: "nicolo@gmail.com",
+            FOR: "mpalitto@gmail.com",
+            GROUP: "NEW-GROUP"
         };
         WS.send('invite', invite); //request for any new invitation to server
         // send anyInvites query

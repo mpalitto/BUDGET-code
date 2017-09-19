@@ -1,4 +1,4 @@
-#Mon Sep 18 15:06:42 UTC 2017
+#Tue Sep 19 14:01:55 UTC 2017
 base.0=/root/BUDGET/platforms/android/build/intermediates/transforms/dex/debug/folders/1000/1f/main
 renamed.0=classes.dex
 file.0=/root/BUDGET/platforms/android/build/intermediates/transforms/dex/debug/folders/1000/1f/main/classes.dex
