@@ -263,6 +263,16 @@ var DatabaseProvider = (function () {
             return err;
         });
     };
+    DatabaseProvider.prototype.deleteMember = function (name) {
+        var data = [name];
+        alert("deletemember: " + name);
+        return this.database.executeSql("delete FROM member WHERE member.name=?", data).then(function (data) {
+            return data;
+        }, function (err) {
+            alert("errore: " + JSON.stringify(err));
+            return err;
+        });
+    };
     DatabaseProvider.prototype.getAllMembers = function () {
         return this.database.executeSql("SELECT * FROM member", []).then(function (data) {
             var members = [];

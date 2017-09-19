@@ -204,26 +204,26 @@ var DatabaseProvider = (function () {
         this.databaseReady = new __WEBPACK_IMPORTED_MODULE_6_rxjs_Rx__["BehaviorSubject"](false);
         return __WEBPACK_IMPORTED_MODULE_8_rxjs_Observable__["Observable"].create(function (observer) {
             _this.platform.ready().then(function () {
-                alert('Creating DB');
+                // alert('Creating DB');
                 _this.sqlite.create({
                     name: 'FamilyBudget.db',
                     location: 'default'
                 })
                     .then(function (db) {
-                    alert('DB has been opened');
+                    // alert('DB has been opened');
                     _this.database = db;
                     _this.storage.get('database_filled').then(function (val) {
                         if (val) {
-                            alert('DB was already FILLED');
+                            // alert('DB was already FILLED');
                             _this.databaseReady.next(true);
                             observer.next(true);
                             observer.complete();
                         }
                         else {
-                            alert('FILLING the DB');
+                            // alert('FILLING the DB');
                             _this.fillDatabase().subscribe(function (val) {
                                 if (val) {
-                                    alert('DB has been filled');
+                                    // alert('DB has been filled');
                                 }
                                 observer.next(true);
                                 observer.complete();
@@ -241,10 +241,10 @@ var DatabaseProvider = (function () {
             _this.http.get('assets/dummyDump.sql')
                 .map(function (res) { return res.text(); })
                 .subscribe(function (sql) {
-                alert(sql);
+                // alert(sql);
                 _this.sqlitePorter.importSqlToDb(_this.database, sql)
                     .then(function (data) {
-                    alert("done importing: " + data);
+                    // alert("done importing: " + data);
                     _this.databaseReady.next(true);
                     _this.storage.set('database_filled', true);
                     observer.next(true);
@@ -263,13 +263,24 @@ var DatabaseProvider = (function () {
             return err;
         });
     };
+    DatabaseProvider.prototype.deleteMember = function (name) {
+        var data = [name];
+        // alert("delete il record: " + data);
+        return this.database.executeSql("select * FROM member WHERE name='Test'", []).then(function (data) {
+            alert("delete il record: " + JSON.stringify(data));
+            return data;
+        }, function (err) {
+            alert("errore: " + JSON.stringify(err));
+            return err;
+        });
+    };
     DatabaseProvider.prototype.getAllMembers = function () {
         return this.database.executeSql("SELECT * FROM member", []).then(function (data) {
             var members = [];
             if (data.rows.length > 0) {
                 for (var i = 0; i < data.rows.length; i++) {
                     members.push({ name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score });
-                    alert(JSON.stringify({ data: members }, null, 4));
+                    // alert(JSON.stringify({ data: members}, null, 4));
                 }
             }
             return members;

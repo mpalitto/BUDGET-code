@@ -19,7 +19,7 @@
   <ion-list>
     <ion-item *ngFor="let mmbr of members">
       <h2>{{ mmbr.name }}</h2>
-      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>
+      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10 <button ion-button small float-right  (click)="deleteMember(mmbr.name)">-</button></p>
     </ion-item>
   </ion-list>
 </ion-content>

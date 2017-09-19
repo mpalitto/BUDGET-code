@@ -90,6 +90,20 @@ export class DatabaseProvider {
     });
   }
  
+  deleteMember(name) {
+ 
+    let data = [name]
+alert("deletemember: " + name);
+    return this.database.executeSql("delete FROM member WHERE member.name=?", data).then(data => {
+   return data;
+    }, err => {
+       alert("errore: " + JSON.stringify(err));
+
+      return err;
+    });
+ 
+  }
+
   getAllMembers() {
     return this.database.executeSql("SELECT * FROM member", []).then((data) => {
       let members = [];

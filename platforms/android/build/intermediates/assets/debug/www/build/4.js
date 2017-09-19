@@ -69,17 +69,17 @@ var ContactPage = (function () {
                 _this.loadMemberData();
             }
             else {
-                alert("DB not ready");
+                // alert("DB not ready");
                 _this.loadMemberData();
             }
         });
     }
     ContactPage.prototype.loadMemberData = function () {
         var _this = this;
-        alert("loading member data");
+        // alert("loading member data");
         this.databaseprovider.getAllMembers().then(function (data) {
             _this.members = data;
-            alert(data);
+            // alert(data);
         });
     };
     ContactPage.prototype.addMember = function () {
@@ -90,12 +90,21 @@ var ContactPage = (function () {
         });
         this.member = {};
     };
+    ContactPage.prototype.deleteMember = function (name) {
+        var _this = this;
+        alert("delete member " + name);
+        this.databaseprovider.deleteMember(name)
+            .then(function (data) {
+            _this.loadMemberData();
+        });
+        this.member = {};
+    };
     return ContactPage;
 }());
 ContactPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-contact',template:/*ion-inline-start:"/root/BUDGET/src/pages/contact/contact.html"*/'<ion-header>\n</ion-header>\n\n<ion-content padding>\n  <ion-item>\n    <ion-label stacked>What\'s your name?</ion-label>\n    <ion-input [(ngModel)]="member.name" placeholder="Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>What\'s your privilege?</ion-label>\n    <ion-input [(ngModel)]="member.privilege" placeholder="Admin, Member"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>How good of a budgetter are you?</ion-label>\n    <ion-input [(ngModel)]="member.score" placeholder="score(1..10)"></ion-input>\n  </ion-item>\n  <button ion-button full (click)="addMember()">Add Member Info</button>\n \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h2>{{ mmbr.name }}</h2>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/contact/contact.html"*/
+        selector: 'page-contact',template:/*ion-inline-start:"/root/BUDGET/src/pages/contact/contact.html"*/'<ion-header>\n</ion-header>\n\n<ion-content padding>\n  <ion-item>\n    <ion-label stacked>What\'s your name?</ion-label>\n    <ion-input [(ngModel)]="member.name" placeholder="Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>What\'s your privilege?</ion-label>\n    <ion-input [(ngModel)]="member.privilege" placeholder="Admin, Member"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>How good of a budgetter are you?</ion-label>\n    <ion-input [(ngModel)]="member.score" placeholder="score(1..10)"></ion-input>\n  </ion-item>\n  <button ion-button full (click)="addMember()">Add Member Info</button>\n \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h2>{{ mmbr.name }}</h2>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10 <button ion-button small float-right (click)="deleteMember(\'"+ {{member.name}}+ "\')">-</button></p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/contact/contact.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__providers_database_database__["a" /* DatabaseProvider */]])
 ], ContactPage);
