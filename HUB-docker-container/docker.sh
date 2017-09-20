@@ -1,8 +1,10 @@
 GITconfig="git config --global user.email your@email.com; git config --global user.name yourName"
 GITconfig="git config --global user.email mpalitto@gmail.com; git config --global user.name Matteo"
 
-APPname="$(pwd | sed 's_.*/__')"
-APPdir="/root/$APPname/$APPname-code/"
+#APPname="$(pwd | sed 's_.*/__')"
+APPname="HUB"
+#APPdir="/root/$APPname/$APPname-code/"
+APPdir="/root/BUDGET/BUDGET-code/HUB-docker-container/HUB-code/"
 
 case $1 in
 	'build')
@@ -10,7 +12,8 @@ case $1 in
 	;;
 
 	'create')
-	docker run -td --name $APPname -h $APPname -p 3000:3000 -v $APPdir:/root/$APPname -w /root/$APPname nodejs-image /bin/bash -c "$GITconfig; mv /root/package.json /root/$APPname/; mv /root/server.js /root/$APPname/; cd /root/$APPname;npm install sqlite3; npm install package.json --save-dev; while true; do sleep 99; done"
+	#docker run -td --name $APPname -h $APPname -p 3000:3000 -v $APPdir:/root/$APPname -w /root/$APPname nodejs-image /bin/bash -c "$GITconfig; mv /root/package.json /root/$APPname/; mv /root/server.js /root/$APPname/; cd /root/$APPname;npm install sqlite3; npm install package.json --save-dev; while true; do sleep 99; done"
+	docker run -td --name $APPname -h $APPname -p 3000:3000 -v $APPdir:/root/$APPname -w /root/$APPname nodejs-image /bin/bash -c "$GITconfig; cd /root/$APPname; npm install; while true; do sleep 99; done"
 	;;
 
 	'enter')
