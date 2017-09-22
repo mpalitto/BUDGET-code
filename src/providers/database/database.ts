@@ -39,12 +39,12 @@ export class DatabaseProvider {
           this.database = db;
           this.storage.get('database_filled').then(val => {
             if (val) {
-	      // alert('DB was already FILLED');
+	       alert('DB was already FILLED');
               this.databaseReady.next(true);
               observer.next(true);
 	      observer.complete();
             } else {
-	      // alert('FILLING the DB');
+	       alert('FILLING the DB');
 	      this.fillDatabase().subscribe(val => {
 	        if (val) {
 	          // alert('DB has been filled');
@@ -80,9 +80,9 @@ export class DatabaseProvider {
   }
  
 
-  addMember(name, privilege, score) {
-    let data = [name, privilege, score]
-    return this.database.executeSql("INSERT INTO member (name, privilege, score) VALUES (?, ?, ?)", data).then(data => {
+  addMember(groupID, groupName, email, name, privilege, score) {
+    let data = [groupID, groupName, email, name, privilege, score]
+    return this.database.executeSql("INSERT INTO membersANDgroups (groupID, groupName, email, name, privilege, score) VALUES (?, ?, ?, ?, ?, ?)", data).then(data => {
       return data;
     }, err => {
       console.log('Error: ', err);
@@ -90,16 +90,46 @@ export class DatabaseProvider {
     });
   }
  
-  getAllMembers() {
-    return this.database.executeSql("SELECT * FROM member", []).then((data) => {
+  getAllMembers(currentGroupID) {
+    return this.database.executeSql("SELECT * FROM membersANDgroups WHERE groupID = '" + currentGroupID + "'", []).then((data) => {
       let members = [];
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
-          members.push({ name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score });
-	  // alert(JSON.stringify({ data: members}, null, 4));
+          members.push({ groupID: data.rows.item(i).groupID, groupName: data.rows.item(i).groupName, email: data.rows.item(i).email, name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score }); // alert(JSON.stringify({ data: members}, null, 4));
         }
       }
       return members;
+    }, err => {
+      console.log('Error: ', err);
+      return [];
+    });
+  }
+ 
+  getAllGroups(userEMAIL) {
+    //return this.database.executeSql("SELECT DISTINCT groupID, groupName FROM membersANDgroups WHERE email = " + userEMAIL, []).then((data) => {
+    return this.database.executeSql("SELECT DISTINCT groupID, groupName FROM membersANDgroups WHERE email = '" + userEMAIL + "'", []).then((data) => {
+      let groups = [];
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          groups.push({ groupID: data.rows.item(i).groupID, groupName: data.rows.item(i).groupName });  //alert(JSON.stringify({ data: groups}, null, 4));
+        }
+      }
+      return groups;
+    }, err => {
+      console.log('Error: ', err);
+      return [];
+    });
+  }
+ 
+  getAdminGroups(userEMAIL) {
+    return this.database.executeSql("SELECT DISTINCT groupID, groupName FROM membersANDgroups WHERE email = '" + userEMAIL + "' AND privilege = 'admin'", []).then((data) => {
+      let adminGroups = [];
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          adminGroups.push({ groupID: data.rows.item(i).groupID, groupName: data.rows.item(i).groupName });  //alert(JSON.stringify({ data: groups}, null, 4));
+        }
+      }
+      return adminGroups;
     }, err => {
       console.log('Error: ', err);
       return [];

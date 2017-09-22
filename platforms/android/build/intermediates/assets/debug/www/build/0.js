@@ -1,6 +1,6 @@
 webpackJsonp([0],{
 
-/***/ 621:
+/***/ 624:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8,7 +8,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TabsPageModule", function() { return TabsPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tabs__ = __webpack_require__(627);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tabs__ = __webpack_require__(633);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -36,7 +36,7 @@ TabsPageModule = __decorate([
 
 /***/ }),
 
-/***/ 627:
+/***/ 633:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56,9 +56,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-// import { AboutPage } from '../about/about';
-// import { ContactPage } from '../contact/contact';
-// import { HomePage } from '../home/home';
 
 
 var TabsPage = (function () {
@@ -74,8 +71,9 @@ var TabsPage = (function () {
             title: 'Are you sure?'
         };
         this.tab1Root = 'HomePage';
-        this.tab2Root = 'AboutPage';
+        this.tab2Root = 'InvitationsPage';
         this.tab3Root = 'ContactPage';
+        this.tab4Root = 'AboutPage';
         this.user = navParams.get('email');
         // send invite
         var invite = {
@@ -114,9 +112,9 @@ var TabsPage = (function () {
 }());
 TabsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])({ name: "TabsPage" }),
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/root/BUDGET/src/pages/tabs/tabs.html"*/'<ion-tabs>\n  <ion-tab (ionSelect)="page=\'Home\'" [root]="tab1Root" tabTitle="Home" tabIcon="home" (click)="alert(\'Home\')"></ion-tab>\n  <ion-tab (ionSelect)="page=\'About\'" [root]="tab2Root" tabTitle="About" tabIcon="information-circle"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Members\'" [root]="tab3Root" tabTitle="Members" tabIcon="contacts"></ion-tab>\n</ion-tabs>\n\n<ion-item><ion-label>{{page}}</ion-label>\n  <ion-select interface="popover" [(ngModel)]="userSelection" (ionChange)="logout()" [selectOptions]="selectOptions"> \n<ion-option [value]="item"  *ngFor="let item of [\'LOGOUT\'] ;let i = index" >\n       {{item}}\n    </ion-option>\n  </ion-select>\n</ion-item>\n<!--ion-select [(ngModel)]="userSelection" (click)="userSelect()">\n    <ion-option selected value=\'\'>{{user}}</ion-option>\n    <ion-option value=\'log-out\'>log-out</ion-option>\n</ion-select>\n\n<!--ion-buttons end>\n        {{user}}\n  <button ion-button (click)="logout()">\n        <ion-icon name="log-out"></ion-icon>\n  </button>\n</ion-buttons-->\n'/*ion-inline-end:"/root/BUDGET/src/pages/tabs/tabs.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/root/BUDGET/src/pages/tabs/tabs.html"*/'<ion-tabs>\n  <ion-tab (ionSelect)="page=\'Home\'" [root]="tab1Root" tabTitle="Home" tabIcon="home" (click)="alert(\'Home\')"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Groups\'" [root]="tab2Root" tabTitle="Invites" tabIcon="mail"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Members\'" [root]="tab3Root" tabTitle="Members" tabIcon="contacts"></ion-tab>\n  <ion-tab (ionSelect)="page=\'About\'" [root]="tab4Root" tabTitle="About" tabIcon="information-circle"></ion-tab>\n</ion-tabs>\n\n<ion-item><ion-label>{{page}}</ion-label>\n  <ion-select interface="popover" [(ngModel)]="userSelection" (ionChange)="logout()" [selectOptions]="selectOptions"> \n<ion-option [value]="item"  *ngFor="let item of [\'LOGOUT\'] ;let i = index" >\n       {{item}}\n    </ion-option>\n  </ion-select>\n</ion-item>\n<!--ion-select [(ngModel)]="userSelection" (click)="userSelect()">\n    <ion-option selected value=\'\'>{{user}}</ion-option>\n    <ion-option value=\'log-out\'>log-out</ion-option>\n</ion-select>\n\n<!--ion-buttons end>\n        {{user}}\n  <button ion-button (click)="logout()">\n        <ion-icon name="log-out"></ion-icon>\n  </button>\n</ion-buttons-->\n'/*ion-inline-end:"/root/BUDGET/src/pages/tabs/tabs.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__providers_socket_socket__["a" /* SocketProvider */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__["a" /* AuthService */], __WEBPACK_IMPORTED_MODULE_3__providers_socket_socket__["a" /* SocketProvider */]])
 ], TabsPage);
 
 //# sourceMappingURL=tabs.js.map

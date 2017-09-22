@@ -25203,6 +25203,10 @@ ion-navbar.toolbar {
   display: none;
 }
 
+page-invitations div.PADDING_TOP {
+  padding-top: 64px;
+}
+
 ge-login .login-content {
   background: #56CA96;
 }

@@ -12,7 +12,7 @@ export class LoginPage {
   loading: Loading;
   //registerCredentials = { email: '', password: '' };
   //just for testing so I don't have to enter it everytime...
-  registerCredentials = { email: 'mpalitto@gmail.com', password: 'oettam68' };
+  registerCredentials = { email: 'marco.email@domainX.com', password: '123' };
  
   constructor(private nav: NavController, private auth: AuthService, private alertCtrl: AlertController, private loadingCtrl: LoadingController) { }
  

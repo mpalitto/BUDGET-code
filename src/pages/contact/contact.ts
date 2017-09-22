@@ -26,14 +26,14 @@ export class ContactPage {
  
   loadMemberData() {
     // alert("loading member data");
-    this.databaseprovider.getAllMembers().then(data => {
+    this.databaseprovider.getAllMembers('marco.email@domainX.com-White-Family').then(data => {
       this.members = data;
       // alert(data);
     })
   }
  
   addMember() {
-    this.databaseprovider.addMember(this.member['name'], this.member['privilege'], parseInt(this.member['score']))
+    this.databaseprovider.addMember('groupID', 'groupName', 'email', this.member['name'], this.member['privilege'], parseInt(this.member['score']))
     .then(data => {
       this.loadMemberData();
     });

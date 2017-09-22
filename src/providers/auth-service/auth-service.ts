@@ -29,7 +29,7 @@ export class AuthService {
         // At this point make a request to your backend to make a real check!
         this.storage.get(credentials.email).then((pass) => {
           let access = (credentials.password === pass);
-          this.currentUser = new User(credentials.email, credentials.email);
+          this.currentUser = new User(credentials.name, credentials.email);
 	  //alert(access);
           observer.next(access);
           observer.complete();
@@ -47,6 +47,7 @@ export class AuthService {
 
       // At this point store the credentials to your backend!
       this.storage.set(credentials.email, credentials.password);
+      this.currentUser = new User(credentials.name, credentials.email);
 
       return Observable.create(observer => {
         observer.next(true);

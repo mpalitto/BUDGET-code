@@ -1,0 +1,45 @@
+<ion-header>
+  <div class="PADDING-TOP">group</div>
+</ion-header>
+
+<ion-content padding>
+    <ion-row>
+  <ion-item col-9>
+    <ion-label>GROUP</ion-label>
+    <ion-select  [(ngModel)]="group" (ionChange)="selectGroup()">
+      <ion-option value='ADDnew NA'>+ ADD</ion-option>
+      <ion-option *ngFor='let grp of groups' value="{{grp.groupName}} {{grp.groupID}}">{{grp.groupName}}</ion-option>
+      <!--ion-option *ngFor='let grp of groups' [value]="'{ groupID: ' + grp.groupID + ', groupName: ' + grp.groupID + '}'">{{grp.groupName}}</ion-option-->
+    </ion-select>
+  </ion-item>
+  <ion-item col-3>
+      <button ion-button icon-only small float-right  (click)="editGroup(group)"><ion-icon name="create"></ion-icon></button>
+  </ion-item>
+    </ion-row>
+  <ion-item>
+    <!--ion-label stacked>What's your name?</ion-label-->
+    <ion-input [(ngModel)]="member.name" placeholder="New Member Name"></ion-input>
+  </ion-item>
+  <ion-item>
+    <!--ion-label stacked>What's your privilege?</ion-label-->
+    <!--ion-input [(ngModel)]="member.privilege" placeholder="Admin or regular Member?"></ion-input-->
+    <ion-label>New Member Privilege</ion-label>
+    <ion-select  [(ngModel)]="member.privilege">
+      <ion-option value="member">Regular Member</ion-option>
+      <ion-option value="admin">Admin</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-item>
+    <!--ion-label stacked>How good of a budgetter are you?</ion-label-->
+    <ion-input [(ngModel)]="member.email" placeholder="New Member EMAIL"></ion-input>
+  </ion-item>
+  <button ion-button full (click)="send_invite()">SEND INVITE</button>
+
+  <div>CURRENT MEMBER LIST FOR: {{group.groupName}}</div> 
+  <ion-list>
+    <ion-item *ngFor="let mmbr of members">
+      <h2>{{ mmbr.name }}</h2>
+      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>
+    </ion-item>
+  </ion-list>
+</ion-content>

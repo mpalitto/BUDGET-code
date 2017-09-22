@@ -1,4 +1,4 @@
-webpackJsonp([6],{
+webpackJsonp([9],{
 
 /***/ 149:
 /***/ (function(module, exports) {
@@ -19,26 +19,38 @@ webpackEmptyAsyncContext.id = 149;
 var map = {
 	"../pages/about/about.module": [
 		616,
-		5
+		8
 	],
 	"../pages/contact/contact.module": [
 		617,
-		4
+		7
+	],
+	"../pages/edit-group/edit-group.module": [
+		618,
+		6
 	],
 	"../pages/home/home.module": [
-		618,
-		3
+		619,
+		5
+	],
+	"../pages/invitations/invitations.module": [
+		620,
+		4
 	],
 	"../pages/login/login.module": [
-		619,
+		621,
+		3
+	],
+	"../pages/new-group/new-group.module": [
+		622,
 		2
 	],
 	"../pages/register/register.module": [
-		620,
+		623,
 		1
 	],
 	"../pages/tabs/tabs.module": [
-		621,
+		624,
 		0
 	]
 };
@@ -106,7 +118,7 @@ var AuthService = (function () {
                 // At this point make a request to your backend to make a real check!
                 _this.storage.get(credentials.email).then(function (pass) {
                     var access = (credentials.password === pass);
-                    _this.currentUser = new User(credentials.email, credentials.email);
+                    _this.currentUser = new User(credentials.name, credentials.email);
                     //alert(access);
                     observer.next(access);
                     observer.complete();
@@ -121,6 +133,7 @@ var AuthService = (function () {
         else {
             // At this point store the credentials to your backend!
             this.storage.set(credentials.email, credentials.password);
+            this.currentUser = new User(credentials.name, credentials.email);
             return __WEBPACK_IMPORTED_MODULE_2_rxjs_Observable__["Observable"].create(function (observer) {
                 observer.next(true);
                 observer.complete();
@@ -214,13 +227,13 @@ var DatabaseProvider = (function () {
                     _this.database = db;
                     _this.storage.get('database_filled').then(function (val) {
                         if (val) {
-                            // alert('DB was already FILLED');
+                            alert('DB was already FILLED');
                             _this.databaseReady.next(true);
                             observer.next(true);
                             observer.complete();
                         }
                         else {
-                            // alert('FILLING the DB');
+                            alert('FILLING the DB');
                             _this.fillDatabase().subscribe(function (val) {
                                 if (val) {
                                     // alert('DB has been filled');
@@ -254,9 +267,9 @@ var DatabaseProvider = (function () {
             });
         });
     };
-    DatabaseProvider.prototype.addMember = function (name, privilege, score) {
-        var data = [name, privilege, score];
-        return this.database.executeSql("INSERT INTO member (name, privilege, score) VALUES (?, ?, ?)", data).then(function (data) {
+    DatabaseProvider.prototype.addMember = function (groupID, groupName, email, name, privilege, score) {
+        var data = [groupID, groupName, email, name, privilege, score];
+        return this.database.executeSql("INSERT INTO membersANDgroups (groupID, groupName, email, name, privilege, score) VALUES (?, ?, ?, ?, ?, ?)", data).then(function (data) {
             return data;
         }, function (err) {
             console.log('Error: ', err);
@@ -264,15 +277,42 @@ var DatabaseProvider = (function () {
         });
     };
     DatabaseProvider.prototype.getAllMembers = function () {
-        return this.database.executeSql("SELECT * FROM member", []).then(function (data) {
+        return this.database.executeSql("SELECT * FROM membersANDgroups", []).then(function (data) {
             var members = [];
             if (data.rows.length > 0) {
                 for (var i = 0; i < data.rows.length; i++) {
-                    members.push({ name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score });
-                    // alert(JSON.stringify({ data: members}, null, 4));
+                    members.push({ groupID: data.rows.item(i).groupID, groupName: data.rows.item(i).groupName, email: data.rows.item(i).email, name: data.rows.item(i).name, privilege: data.rows.item(i).privilege, score: data.rows.item(i).score }); // alert(JSON.stringify({ data: members}, null, 4));
                 }
             }
             return members;
+        }, function (err) {
+            console.log('Error: ', err);
+            return [];
+        });
+    };
+    DatabaseProvider.prototype.getAllGroups = function () {
+        return this.database.executeSql("SELECT DISTINCT groupID, groupName FROM membersANDgroups", []).then(function (data) {
+            var groups = [];
+            if (data.rows.length > 0) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    groups.push({ groupID: data.rows.item(i).groupID, groupName: data.rows.item(i).group.Name }); //alert(JSON.stringify({ data: groups}, null, 4));
+                }
+            }
+            return groups;
+        }, function (err) {
+            console.log('Error: ', err);
+            return [];
+        });
+    };
+    DatabaseProvider.prototype.getAdminGroups = function (userEMAIL) {
+        return this.database.executeSql("SELECT DISTINCT groupID, groupName FROM membersANDgroups WHERE email = userEMAIL AND privilege = 'admin'", []).then(function (data) {
+            var adminGroups = [];
+            if (data.rows.length > 0) {
+                for (var i = 0; i < data.rows.length; i++) {
+                    adminGroups.push({ groupID: data.rows.item(i).groupID, groupName: data.rows.item(i).group.Name }); //alert(JSON.stringify({ data: groups}, null, 4));
+                }
+            }
+            return adminGroups;
         }, function (err) {
             console.log('Error: ', err);
             return [];
@@ -285,7 +325,7 @@ var DatabaseProvider = (function () {
 }());
 DatabaseProvider = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_5__ionic_native_sqlite_porter__["a" /* SQLitePorter */], __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */], __WEBPACK_IMPORTED_MODULE_4__ionic_native_sqlite__["a" /* SQLite */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["j" /* Platform */], __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_5__ionic_native_sqlite_porter__["a" /* SQLitePorter */], __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */], __WEBPACK_IMPORTED_MODULE_4__ionic_native_sqlite__["a" /* SQLite */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["k" /* Platform */], __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]])
 ], DatabaseProvider);
 
 //# sourceMappingURL=database.js.map
@@ -427,8 +467,11 @@ AppModule = __decorate([
                 links: [
                     { loadChildren: '../pages/about/about.module#AboutPageModule', name: 'AboutPage', segment: 'about', priority: 'low', defaultHistory: [] },
                     { loadChildren: '../pages/contact/contact.module#ContactPageModule', name: 'ContactPage', segment: 'contact', priority: 'low', defaultHistory: [] },
+                    { loadChildren: '../pages/edit-group/edit-group.module#EditGroupPageModule', name: 'EditGroupPage', segment: 'edit-group', priority: 'low', defaultHistory: [] },
                     { loadChildren: '../pages/home/home.module#HomePageModule', name: 'HomePage', segment: 'home', priority: 'low', defaultHistory: [] },
+                    { loadChildren: '../pages/invitations/invitations.module#InvitationsPageModule', name: 'InvitationsPage', segment: 'invitations', priority: 'low', defaultHistory: [] },
                     { loadChildren: '../pages/login/login.module#LoginPageModule', name: 'LoginPage', segment: 'login', priority: 'low', defaultHistory: [] },
+                    { loadChildren: '../pages/new-group/new-group.module#NewGroupPageModule', name: 'NewGroupPage', segment: 'new-group', priority: 'low', defaultHistory: [] },
                     { loadChildren: '../pages/register/register.module#RegisterPageModule', name: 'RegisterPage', segment: 'register', priority: 'low', defaultHistory: [] },
                     { loadChildren: '../pages/tabs/tabs.module#TabsPageModule', name: 'TabsPage', segment: 'tabs', priority: 'low', defaultHistory: [] }
                 ]
@@ -504,7 +547,7 @@ var MyApp = (function () {
 MyApp = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/root/BUDGET/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/root/BUDGET/src/app/app.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
 
 //# sourceMappingURL=app.component.js.map
