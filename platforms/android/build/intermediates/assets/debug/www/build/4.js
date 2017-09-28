@@ -1,14 +1,14 @@
 webpackJsonp([4],{
 
-/***/ 573:
+/***/ 621:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ContactPageModule", function() { return ContactPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InvitationsPageModule", function() { return InvitationsPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__contact__ = __webpack_require__(579);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__invitations__ = __webpack_require__(630);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,31 +18,31 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var ContactPageModule = (function () {
-    function ContactPageModule() {
+var InvitationsPageModule = (function () {
+    function InvitationsPageModule() {
     }
-    return ContactPageModule;
+    return InvitationsPageModule;
 }());
-ContactPageModule = __decorate([
+InvitationsPageModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["L" /* NgModule */])({
-        declarations: [__WEBPACK_IMPORTED_MODULE_2__contact__["a" /* ContactPage */]],
-        imports: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__contact__["a" /* ContactPage */])],
-        entryComponents: [__WEBPACK_IMPORTED_MODULE_2__contact__["a" /* ContactPage */]]
+        declarations: [__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */]],
+        imports: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */])],
+        entryComponents: [__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */]]
     })
-], ContactPageModule);
+], InvitationsPageModule);
 
-//# sourceMappingURL=contact.module.js.map
+//# sourceMappingURL=invitations.module.js.map
 
 /***/ }),
 
-/***/ 579:
+/***/ 630:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ContactPage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InvitationsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_database_database__ = __webpack_require__(254);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__ = __webpack_require__(277);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -56,51 +56,107 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var ContactPage = (function () {
-    function ContactPage(navCtrl, databaseprovider) {
+var InvitationsPage = (function () {
+    function InvitationsPage(events, modalCtrl, navCtrl, mainHUB) {
         var _this = this;
+        this.events = events;
+        this.modalCtrl = modalCtrl;
         this.navCtrl = navCtrl;
-        this.databaseprovider = databaseprovider;
-        this.member = {};
-        this.members = [];
-        //this.databaseprovider.getDatabaseState().subscribe(rdy => {
-        this.databaseprovider.prefillDB().subscribe(function (rdy) {
-            if (rdy) {
-                _this.loadMemberData();
-            }
-            else {
-                alert("DB not ready");
-                _this.loadMemberData();
-            }
+        this.mainHUB = mainHUB;
+        this.newMember = { groupID: '', groupName: '', email: '', name: '', privilege: '', score: '' };
+        this.members = []; //members for the selected group
+        this.group = ""; //selected group
+        this.groupID = ""; //selected group
+        this.groupName = ""; //selected group
+        this.groups = []; //groups which current user is part of
+        this.adminGroups = []; //groups which current user is admin
+        this.me = { nick: '', email: '' }; //my username and email address
+        this.amIadmin = false; //selected group
+        this.events.subscribe('userInfo', function (nick, email) {
+            _this.me.nick = nick;
+            _this.me.email = email;
+        });
+        this.events.subscribe('change-group', function (groupID, groupName, amIadmin) {
+            _this.groupID = groupID;
+            _this.groupName = groupName;
+            _this.amIadmin = amIadmin;
+            _this.loadGroupMembers();
+        });
+        this.events.publish('tab2opened');
+        this.mainHUB.prefillDB().subscribe(function (rdy) {
+            _this.loadGroupMembers();
         });
     }
-    ContactPage.prototype.loadMemberData = function () {
+    InvitationsPage.prototype.loadGroupMembers = function () {
         var _this = this;
-        alert("loading member data");
-        this.databaseprovider.getAllMembers().then(function (data) {
+        this.mainHUB.getAllMembers(this.groupID).then(function (data) {
             _this.members = data;
-            alert(data);
+            // alert('members for group ' + this.groupID + ': ' + data);
         });
     };
-    ContactPage.prototype.addMember = function () {
+    InvitationsPage.prototype.addMember = function () {
         var _this = this;
-        this.databaseprovider.addMember(this.member['name'], this.member['privilege'], parseInt(this.member['score']))
+        this.mainHUB.addMember(this.newMember['groupID'], this.newMember['groupName'], this.newMember['email'], this.newMember['name'], this.newMember['privilege'], parseInt(this.newMember['score']))
             .then(function (data) {
-            _this.loadMemberData();
+            _this.loadGroupMembers();
         });
-        this.member = {};
+        this.newMember = { groupID: '', groupName: '', email: '', name: '', privilege: '', score: '' };
     };
-    return ContactPage;
+    InvitationsPage.prototype.editGroup = function (gn) {
+        var _this = this;
+        var modal = this.modalCtrl.create('EditGroupPage', { groupName: gn });
+        modal.onDidDismiss(function (data) {
+            // alert(JSON.stringify(data)); alert('NEW NAME: '+data.newName);
+            // UPDATE
+            if (data.button === 'update') {
+                _this.mainHUB.updateGroupName(_this.groupID, data.newName).then(function (newName) {
+                    alert(_this.groupName + ' has been RENAMED to: ' + newName);
+                    _this.loadGroupMembers();
+                    _this.groupName = newName;
+                    _this.events.publish('grpUpdated', _this.groupID, _this.groupName);
+                });
+                // ADD NEW GROUP
+            }
+            else if (data.button === 'create') {
+                _this.groupName = data.newName;
+                _this.groupID = _this.me.email + '-' + data.newName.replace(/ /g, '-');
+                // alert('new groupID: '+ this.groupID);
+                _this.events.publish('newGrpAdded', _this.groupID, _this.groupName);
+                _this.newMember['groupID'] = _this.groupID;
+                _this.newMember['groupName'] = data.newName;
+                _this.newMember['name'] = _this.me.nick;
+                _this.newMember['email'] = _this.me.email;
+                _this.newMember['privilege'] = 'admin';
+                _this.newMember['score'] = '6';
+                _this.addMember();
+                // alert(JSON.stringify(this.newMember));
+            }
+            ;
+        });
+        modal.present();
+    };
+    InvitationsPage.prototype.sendInvite = function () {
+        var invite = {
+            FROM: this.me.email,
+            FOR: this.newMember.email,
+            GROUP: this.groupID
+        };
+        this.mainHUB.send('invite', invite);
+    };
+    InvitationsPage.prototype.showInvites = function () {
+        alert('this selection will show all invites history');
+    };
+    return InvitationsPage;
 }());
-ContactPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
+InvitationsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-contact',template:/*ion-inline-start:"/root/BUDGET/src/pages/contact/contact.html"*/'<ion-header>\n</ion-header>\n\n<ion-content padding>\n  <ion-item>\n    <ion-label stacked>What\'s your name?</ion-label>\n    <ion-input [(ngModel)]="member.name" placeholder="Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>What\'s your privilege?</ion-label>\n    <ion-input [(ngModel)]="member.privilege" placeholder="Admin, Member"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>How good of a budgetter are you?</ion-label>\n    <ion-input [(ngModel)]="member.score" placeholder="score(1..10)"></ion-input>\n  </ion-item>\n  <button ion-button full (click)="addMember()">Add Member Info</button>\n \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h2>{{ mmbr.name }}</h2>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/contact/contact.html"*/
+        selector: 'page-invitations',template:/*ion-inline-start:"/root/BUDGET/src/pages/invitations/invitations.html"*/'<ion-header>\n  <div class="PADDING-TOP">group</div>\n</ion-header>\n\n<ion-content padding>\n <ion-row>\n <!--div> <h6 style="background-color:lightgray; text-align: center;">GROUP</h6> </div-->\n  <ion-item>\n      <button ion-button round float-left  (click)="editGroup(groupName)"><ion-icon name="create"></ion-icon> EDIT GROUP</button>\n      <button ion-button round float-right  (click)="editGroup(\'\')"><ion-icon name="add"></ion-icon> ADD NEW GROUP</button>\n  </ion-item>\n </ion-row>\n  <div> <h6 style="background-color:lightgray; text-align: center;">NEW INVITATION</h6> </div>\n  <ion-item>\n    <ion-input [(ngModel)]="newMember.name" placeholder="New Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label>New Member Privilege</ion-label>\n    <ion-select  [(ngModel)]="newMember.privilege">\n      <ion-option value="member">Regular Member</ion-option>\n      <ion-option value="admin">Admin</ion-option>\n    </ion-select>\n  </ion-item>\n  <ion-item>\n    <!--ion-label stacked>How good of a budgetter are you?</ion-label-->\n    <ion-input [(ngModel)]="newMember.email" placeholder="New Member EMAIL"></ion-input>\n  </ion-item>\n  <ion-item>\n  <button ion-button round float-left (click)="sendInvite()">SEND INVITE</button>\n  <button ion-button round float-right (click)="showInvites()">SHOW INVITEs</button>\n  </ion-item>\n\n  <h6 style="background-color:lightgray;">MEMBERS LIST FOR: {{this.groupName}}</h6> \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h6>{{ mmbr.name }}</h6>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/invitations/invitations.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__providers_database_database__["a" /* DatabaseProvider */]])
-], ContactPage);
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Events */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* ModalController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__["a" /* MainHubProvider */]])
+], InvitationsPage);
 
-//# sourceMappingURL=contact.js.map
+//# sourceMappingURL=invitations.js.map
 
 /***/ })
 

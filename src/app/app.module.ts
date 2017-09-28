@@ -18,6 +18,8 @@ import { MyApp } from './app.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SocketProvider } from '../providers/socket/socket';
+import { MainHubProvider } from '../providers/main-hub/main-hub';
 //import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 
 @NgModule({
@@ -52,7 +54,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     SQLitePorter,
     SQLite,
     AuthService,
-    DatabaseProvider
+    DatabaseProvider,
+    SocketProvider,
+    MainHubProvider
     //, AuthServiceProvider
   ]
 })

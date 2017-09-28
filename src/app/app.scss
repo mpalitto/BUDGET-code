@@ -15,6 +15,18 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
+.mySelect {
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
+}
+
+.mySelect70 {
+  max-width: 70%;
+  min-width: 70%;
+  width: 70%;
+}
+
 .remove-cancel {
     .alert-button:nth-child(1) {
         display: none;

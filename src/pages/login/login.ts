@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading, IonicPage } from 'ionic-angular';
 import { AuthService } from '../../providers/auth-service/auth-service';
 // import { TabsPage } from '../tabs/tabs';
+import { DatabaseProvider } from './../../providers/database/database';
  
 @IonicPage()
 @Component({
@@ -10,11 +11,19 @@ import { AuthService } from '../../providers/auth-service/auth-service';
 })
 export class LoginPage {
   loading: Loading;
-  //registerCredentials = { email: '', password: '' };
+  //registerCredentials = { email: '', password: '', nick: '' };
   //just for testing so I don't have to enter it everytime...
-  registerCredentials = { email: 'mpalitto@gmail.com', password: 'oettam68' };
+  registerCredentials = { email: 'marco.email@domainX.com', password: '123', nick: 'Marco White' };
  
-  constructor(private nav: NavController, private auth: AuthService, private alertCtrl: AlertController, private loadingCtrl: LoadingController) { }
+  constructor(private nav: NavController, private auth: AuthService, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private databaseprovider: DatabaseProvider) {
+    this.databaseprovider.prefillDB().subscribe(rdy => {
+    // if (rdy) { //
+    //     alert('DB ready');
+    //   } else {
+    //     alert("DB not ready");
+    //   }
+    });
+  }
  
   public createAccount() {
   // this.nav.push('RegisterPage');
@@ -22,7 +31,7 @@ export class LoginPage {
     this.auth.register(this.registerCredentials).subscribe(success => {
       if (success) {
         this.showError("Success", "Account created.");
-        this.nav.push('TabsPage', {email: this.registerCredentials.email});
+        this.nav.push('TabsPage', {nick: this.registerCredentials.nick, email: this.registerCredentials.email});
       } else {
         this.showError("Error", "Problem creating account.");
       }
@@ -38,7 +47,7 @@ export class LoginPage {
       //alert(confirmed);
       if (confirmed) {        
         //this.nav.setRoot(TabsPage);
-        this.nav.push('TabsPage', {email: this.registerCredentials.email});
+        this.nav.push('TabsPage', {nick: this.registerCredentials.nick, email: this.registerCredentials.email});
       } else {
         this.showError("Error", "Access Denied");
       }

@@ -29,6 +29,9 @@
         <ion-col class="signup-col">
           <!--button ion-button class="submit-btn" full type="submit" [disabled]="!registerForm.form.valid">Login</button-->
           <button ion-button class="submit-btn" full (click)="login()">Login</button>
+            <ion-item>
+              <ion-input type="text" placeholder="Nick Name" name="nick-name" [(ngModel)]="registerCredentials.nick" required></ion-input>
+            </ion-item>
           <button ion-button class="register-btn" block clear (click)="createAccount()">Create New Account</button>
         </ion-col>
       </ion-row>

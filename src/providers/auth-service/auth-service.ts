@@ -2,14 +2,19 @@ import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import { DatabaseProvider } from './../../providers/database/database';
  
 export class User {
-  name: string;
+  nick: string;
   email: string;
+  groupID: string; //current group ID
+  groupName: string; //current group Name
  
-  constructor(name: string, email: string) {
-    this.name = name;
+  constructor(nick: string, email: string, groupID: string, groupName: string) {
+    this.nick = nick;
     this.email = email;
+    this.groupID = groupID;
+    this.groupName = groupName;
   }
 }
  
@@ -18,41 +23,54 @@ export class AuthService {
   currentUser: User;
  
   //inject storage in this service
-  constructor(public storage: Storage) { }
+  constructor(public storage: Storage, private databaseprovider: DatabaseProvider) { }
 
   public login(credentials) {
+    return Observable.create(observer => {
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
-      return Observable.create(observer => {
 
-        // At this point make a request to your backend to make a real check!
-        this.storage.get(credentials.email).then((pass) => {
-          let access = (credentials.password === pass);
-          this.currentUser = new User(credentials.email, credentials.email);
-	  //alert(access);
-          observer.next(access);
-          observer.complete();
-	}).catch(() => {observer.next(false); observer.complete();});
-
-        
+      this.databaseprovider.getUserInfo(credentials.email).then(data => {
+        // alert(JSON.stringify(data));
+        let access = (credentials.password === data.pass);
+        // alert('entered: '+ credentials.password +' should be: "'+ data.pass +'"');
+        if (access) {
+          this.currentUser = new User(data.nick, data.email, data.groupID, data.groupName);
+        }
+        observer.next(access);
+        observer.complete();
       });
-    }
+      // }).catch(() => {observer.next(false); observer.complete();});
+      }
+    });
   }
  
   public register(credentials) {
-    if (credentials.email === null || credentials.password === null) {
-      return Observable.throw("Please insert credentials");
+      return Observable.create(observer => {
+    if (credentials.email === null || credentials.password === null || credentials.nick === null) {
+      alert("Please insert credentials");
+      // return false;
+      observer.next(false);
+      observer.complete();
     } else {
 
-      // At this point store the credentials to your backend!
-      this.storage.set(credentials.email, credentials.password);
-
-      return Observable.create(observer => {
-        observer.next(true);
-        observer.complete();
+      this.databaseprovider.addNewUser(credentials.nick, credentials.email, 'not-yet-selected', 'not yet selected', credentials.password).then(data => {
+          this.currentUser = new User(credentials.nick, credentials.email, 'marco.email@domainX.com-White-Family', 'White Family');
+          alert('User: ' + JSON.stringify(this.currentUser));
       });
-    }
+
+      // At this point store the credentials to your backend!
+      // this.storage.set(credentials.email, credentials.password);
+      // this.storage.set('nick4'+credentials.email, credentials.nick);
+      // this.currentUser = new User(credentials.nick, credentials.email);
+
+      // return Observable.create(observer => {
+      observer.next(true);
+      observer.complete();
+      // });
+      }
+    });
   }
  
   public getUserInfo() : User {
