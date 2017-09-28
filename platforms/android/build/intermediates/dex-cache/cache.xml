@@ -3,21 +3,21 @@
 
     <item
         is-multidex="false"
+        jar="/root/BUDGET/platforms/android/build/intermediates/exploded-aar/org.apache.cordova/CordovaLib/6.2.3/debug/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="aa712599654c301e0aa3aaf71f85facc5f00e813">
+        <dex dex="/root/BUDGET/platforms/android/build/intermediates/pre-dexed/debug/CordovaLib-6.2.3-debug_48982098a762d0d485448809be645524ec1d14b9.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/root/BUDGET/platforms/android/libs/sqlite-connector.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.0"
         sha1="76169ab23a4f939925491c6fe186749da5a56ee9">
         <dex dex="/root/BUDGET/platforms/android/build/intermediates/pre-dexed/debug/sqlite-connector_55f37f5cdf9501637c4539d5332408df8b028057.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/root/BUDGET/platforms/android/build/intermediates/exploded-aar/org.apache.cordova/CordovaLib/6.2.3/debug/jars/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="c469e0c11423be780117c5511eff08e1c161cb1d">
-        <dex dex="/root/BUDGET/platforms/android/build/intermediates/pre-dexed/debug/CordovaLib-6.2.3-debug_48982098a762d0d485448809be645524ec1d14b9.jar" />
     </item>
 
 </items>

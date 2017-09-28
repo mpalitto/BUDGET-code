@@ -40,6 +40,14 @@ export class TabsPage {
       this.events.publish('change-group', this.currentGroupID, this.groupNames[this.currentGroupID], this.amIadmin[this.currentGroupID]);
     });
 
+   this.events.subscribe('invites', (invites) => {
+     alert('INVITES sub'+JSON.stringify(invites));
+
+let modal = this.modalCtrl.create('alerts', {groupName: invites});
+      modal.onDidDismiss(data => {});
+ 	modal.present();
+    });
+
     this.events.subscribe('editGRP', (gn) => {
       this.editGroup(gn);
     });

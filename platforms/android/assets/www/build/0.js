@@ -57,9 +57,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var TabsPage = (function () {
-    function TabsPage(events, navCtrl, navParams, mainHUB) {
+    function TabsPage(events, modalCtrl, navCtrl, navParams, mainHUB) {
         var _this = this;
         this.events = events;
+        this.modalCtrl = modalCtrl;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.mainHUB = mainHUB;
@@ -71,6 +72,7 @@ var TabsPage = (function () {
         this.groupIDs = [];
         this.groupNames = {}; // {groupID: groupName}
         this.amIadmin = {}; // {groupID: amIadmin}
+        this.showBUT = false; // sho buttons for group editing
         this.selectOptions = {
             title: 'Are you sure?'
         };
@@ -80,11 +82,6 @@ var TabsPage = (function () {
         this.tab4Root = 'AboutPage';
         this.userNick = navParams.get('nick');
         this.user = navParams.get('email');
-        this.events.subscribe('grpUpdated', function (id, name) {
-            _this.groupNames[id] = name;
-            _this.currentGroupID = _this.groupIDs[0];
-            _this.currentGroupID = id;
-        });
         this.events.subscribe('newGrpAdded', function (id, name) {
             _this.groupIDs.push(id);
             _this.groupNames[id] = name;
@@ -92,9 +89,13 @@ var TabsPage = (function () {
             _this.currentGroupID = id;
             _this.events.publish('change-group', _this.currentGroupID, _this.groupNames[_this.currentGroupID], _this.amIadmin[_this.currentGroupID]);
         });
+        this.events.subscribe('editGRP', function (gn) {
+            _this.editGroup(gn);
+        });
         this.events.subscribe('tab2opened', function () {
             _this.events.publish('userInfo', _this.userNick, _this.user);
             _this.events.publish('change-group', _this.currentGroupID, _this.groupNames[_this.currentGroupID], _this.amIadmin[_this.currentGroupID]);
+            _this.showBUT = true;
         });
         this.mainHUB.getAllGroups(this.user).then(function (data) {
             // alert('DATA: '+JSON.stringify(data));
@@ -134,7 +135,7 @@ var TabsPage = (function () {
             cmd: "Hi"
         };
         mainHUB.send('message', data);
-    }
+    } // end constructor
     TabsPage.prototype.logout = function () {
         var _this = this;
         //alert('logging OUT');
@@ -143,15 +144,43 @@ var TabsPage = (function () {
         });
     };
     TabsPage.prototype.selectGroup = function () {
+        alert('change-group: ' + ' <--> ' + this.currentGroupID + ' <--> ' + this.groupNames[this.currentGroupID] + ' <--> ' + this.amIadmin[this.currentGroupID]);
         this.events.publish('change-group', this.currentGroupID, this.groupNames[this.currentGroupID], this.amIadmin[this.currentGroupID]);
     };
+    TabsPage.prototype.editGroup = function (gn) {
+        var _this = this;
+        var modal = this.modalCtrl.create('EditGroupPage', { groupName: gn });
+        modal.onDidDismiss(function (data) {
+            // alert(JSON.stringify(data)); alert('NEW NAME: '+data.newName);
+            // UPDATE
+            if (data.button === 'update') {
+                _this.mainHUB.updateGroupName(_this.currentGroupID, data.newName).then(function (newName) {
+                    // alert(this.groupName+' has been RENAMED to: '+ newName);
+                    // this.loadGroupMembers();
+                    _this.groupNames[_this.currentGroupID] = newName;
+                    _this.selectGroup();
+                    //this.events.publish('grpUpdated');
+                });
+                // ADD NEW GROUP
+            }
+            else if (data.button === 'create') {
+                _this.currentGroupID = _this.user + '-' + data.newName.replace(/ /g, '-');
+                _this.groupIDs.push(_this.currentGroupID);
+                _this.groupNames[_this.currentGroupID] = data.newName;
+                _this.amIadmin[_this.currentGroupID] = true;
+                _this.events.publish('addNewMember', _this.currentGroupID, _this.groupNames[_this.currentGroupID], _this.userNick, _this.user, 'admin', '6');
+                _this.selectGroup();
+            } // end elseif
+        }); // end modal.onDismiss
+        modal.present();
+    }; // end editGroup
     return TabsPage;
-}());
+}()); // end class
 TabsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])({ name: "TabsPage" }),
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/root/BUDGET/src/pages/tabs/tabs.html"*/'<ion-tabs>\n  <ion-tab (ionSelect)="page=\'Home\'" [root]="tab1Root" tabTitle="Overview" tabIcon="speedometer"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Groups\'" [root]="tab2Root" tabTitle="Groups" tabIcon="contacts"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Members\'" [root]="tab3Root" tabTitle="Alerts" tabIcon="mail"></ion-tab>\n  <ion-tab (ionSelect)="page=\'About\'" [root]="tab4Root" tabTitle="Settings" tabIcon="construct"></ion-tab>\n</ion-tabs>\n\n<ion-row>\n\n <ion-item col-6>\n  <ion-select col-6 class="mySelect" interface="popover" [(ngModel)]="currentGroupID" (ionChange)="selectGroup()">\n    <ion-option *ngFor="let grp of groupIDs" [value]="grp">{{groupNames[grp]}}</ion-option>\n  </ion-select>\n </ion-item>\n\n <ion-item col-6>\n   <ion-select col-6 class="mySelect" interface="popover" [(ngModel)]="userSelection" (ionChange)="logout()" [selectOptions]="selectOptions" [placeholder]="userNick"> \n   <ion-option value="LOGOUT">LOGOUT</ion-option>\n  </ion-select>\n </ion-item> \n\n</ion-row>\n<!--ion-select [(ngModel)]="userSelection" (click)="userSelect()">\n    <ion-option selected value=\'\'>{{user}}</ion-option>\n    <ion-option value=\'log-out\'>log-out</ion-option>\n</ion-select>\n\n<!--ion-buttons end>\n        {{user}}\n  <button ion-button (click)="logout()">\n        <ion-icon name="log-out"></ion-icon>\n  </button>\n</ion-buttons-->\n'/*ion-inline-end:"/root/BUDGET/src/pages/tabs/tabs.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/root/BUDGET/src/pages/tabs/tabs.html"*/'<ion-tabs>\n  <ion-tab (ionSelect)="page=\'Home\'" [root]="tab1Root" tabTitle="Overview" tabIcon="speedometer"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Groups\'" [root]="tab2Root" tabTitle="Groups" tabIcon="contacts"></ion-tab>\n  <ion-tab (ionSelect)="page=\'Members\'" [root]="tab3Root" tabTitle="Alerts" tabIcon="mail"></ion-tab>\n  <ion-tab (ionSelect)="page=\'About\'" [root]="tab4Root" tabTitle="Settings" tabIcon="construct"></ion-tab>\n</ion-tabs>\n\n<ion-row>\n\n <ion-item col-6>\n  <ion-select #input class="mySelect" interface="popover" [(ngModel)]="currentGroupID" (ionChange)="selectGroup()">\n    <ion-option *ngFor="let grp of groupIDs" [value]="grp" [attr.id]="grp">{{groupNames[grp]}}</ion-option>\n  </ion-select>\n </ion-item>\n\n <ion-item col-6>\n   <ion-select class="mySelect" interface="popover" [(ngModel)]="userSelection" (ionChange)="logout()" [selectOptions]="selectOptions" [placeholder]="userNick"> \n   <ion-option value="LOGOUT">LOGOUT</ion-option>\n  </ion-select>\n </ion-item> \n\n</ion-row>\n'/*ion-inline-end:"/root/BUDGET/src/pages/tabs/tabs.html"*/
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Events */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__["a" /* MainHubProvider */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Events */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* ModalController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__["a" /* MainHubProvider */]])
 ], TabsPage);
 
 //# sourceMappingURL=tabs.js.map

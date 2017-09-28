@@ -76,6 +76,12 @@ var InvitationsPage = (function () {
             _this.me.nick = nick;
             _this.me.email = email;
         });
+        this.events.subscribe('addNewMember', function (groupID, groupName, nick, email, privilege, score) {
+            _this.mainHUB.addMember(groupID, groupName, email, nick, privilege, parseInt(score))
+                .then(function (data) {
+                _this.loadGroupMembers();
+            });
+        });
         this.events.subscribe('change-group', function (groupID, groupName, amIadmin) {
             _this.groupID = groupID;
             _this.groupName = groupName;
@@ -94,47 +100,41 @@ var InvitationsPage = (function () {
             // alert('members for group ' + this.groupID + ': ' + data);
         });
     };
-    InvitationsPage.prototype.addMember = function () {
-        var _this = this;
-        this.mainHUB.addMember(this.newMember['groupID'], this.newMember['groupName'], this.newMember['email'], this.newMember['name'], this.newMember['privilege'], parseInt(this.newMember['score']))
-            .then(function (data) {
-            _this.loadGroupMembers();
-        });
-        this.newMember = { groupID: '', groupName: '', email: '', name: '', privilege: '', score: '' };
-    };
     InvitationsPage.prototype.editGroup = function (gn) {
-        var _this = this;
-        var modal = this.modalCtrl.create('EditGroupPage', { groupName: gn });
-        modal.onDidDismiss(function (data) {
-            // alert(JSON.stringify(data)); alert('NEW NAME: '+data.newName);
-            // UPDATE
-            if (data.button === 'update') {
-                _this.mainHUB.updateGroupName(_this.groupID, data.newName).then(function (newName) {
-                    alert(_this.groupName + ' has been RENAMED to: ' + newName);
-                    _this.loadGroupMembers();
-                    _this.groupName = newName;
-                    _this.events.publish('grpUpdated', _this.groupID, _this.groupName);
-                });
-                // ADD NEW GROUP
-            }
-            else if (data.button === 'create') {
-                _this.groupName = data.newName;
-                _this.groupID = _this.me.email + '-' + data.newName.replace(/ /g, '-');
-                // alert('new groupID: '+ this.groupID);
-                _this.events.publish('newGrpAdded', _this.groupID, _this.groupName);
-                _this.newMember['groupID'] = _this.groupID;
-                _this.newMember['groupName'] = data.newName;
-                _this.newMember['name'] = _this.me.nick;
-                _this.newMember['email'] = _this.me.email;
-                _this.newMember['privilege'] = 'admin';
-                _this.newMember['score'] = '6';
-                _this.addMember();
-                // alert(JSON.stringify(this.newMember));
-            }
-            ;
-        });
-        modal.present();
+        this.events.publish('editGRP', gn);
     };
+    //   editGroup(gn) {
+    //       let modal = this.modalCtrl.create('EditGroupPage', {groupName: gn});
+    //       modal.onDidDismiss(data => {
+    //         // alert(JSON.stringify(data)); alert('NEW NAME: '+data.newName);
+    // 
+    //         // UPDATE
+    //         if (data.button === 'update') {
+    //           this.mainHUB.updateGroupName(this.groupID, data.newName).then(newName => { 
+    //             alert(this.groupName+' has been RENAMED to: '+ newName); 
+    //             this.loadGroupMembers();
+    //             this.groupName = newName;
+    //             this.events.publish('grpUpdated', this.groupID, this.groupName);
+    //           });
+    // 
+    //         // ADD NEW GROUP
+    //         } else if (data.button === 'create') {
+    //           this.groupName = data.newName;
+    //           this.groupID = this.me.email + '-' + data.newName.replace(/ /g,'-');
+    //           // alert('new groupID: '+ this.groupID);
+    //           this.events.publish('newGrpAdded', this.groupID, this.groupName);
+    //           this.newMember['groupID'] = this.groupID;
+    //           this.newMember['groupName'] = data.newName;
+    //           this.newMember['name'] = this.me.nick;
+    //           this.newMember['email'] = this.me.email;
+    //           this.newMember['privilege'] = 'admin';
+    //           this.newMember['score'] = '6';
+    //           this.addMember();
+    //           // alert(JSON.stringify(this.newMember));
+    //         };
+    //       });
+    //       modal.present();
+    //   }
     InvitationsPage.prototype.sendInvite = function () {
         var invite = {
             FROM: this.me.email,
@@ -151,7 +151,7 @@ var InvitationsPage = (function () {
 InvitationsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-invitations',template:/*ion-inline-start:"/root/BUDGET/src/pages/invitations/invitations.html"*/'<ion-header>\n  <div class="PADDING-TOP">group</div>\n</ion-header>\n\n<ion-content padding>\n <ion-row>\n <!--div> <h6 style="background-color:lightgray; text-align: center;">GROUP</h6> </div-->\n  <ion-item>\n      <button ion-button round float-left  (click)="editGroup(groupName)"><ion-icon name="create"></ion-icon> EDIT GROUP</button>\n      <button ion-button round float-right  (click)="editGroup(\'\')"><ion-icon name="add"></ion-icon> ADD NEW GROUP</button>\n  </ion-item>\n </ion-row>\n  <div> <h6 style="background-color:lightgray; text-align: center;">NEW INVITATION</h6> </div>\n  <ion-item>\n    <ion-input [(ngModel)]="newMember.name" placeholder="New Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label>New Member Privilege</ion-label>\n    <ion-select  [(ngModel)]="newMember.privilege">\n      <ion-option value="member">Regular Member</ion-option>\n      <ion-option value="admin">Admin</ion-option>\n    </ion-select>\n  </ion-item>\n  <ion-item>\n    <!--ion-label stacked>How good of a budgetter are you?</ion-label-->\n    <ion-input [(ngModel)]="newMember.email" placeholder="New Member EMAIL"></ion-input>\n  </ion-item>\n  <ion-item>\n  <button ion-button round float-left (click)="sendInvite()">SEND INVITE</button>\n  <button ion-button round float-right (click)="showInvites()">SHOW INVITEs</button>\n  </ion-item>\n\n  <h6 style="background-color:lightgray;">MEMBERS LIST FOR: {{this.groupName}}</h6> \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h6>{{ mmbr.name }}</h6>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/invitations/invitations.html"*/
+        selector: 'page-invitations',template:/*ion-inline-start:"/root/BUDGET/src/pages/invitations/invitations.html"*/'<ion-header>\n  <div class="PADDING-TOP">group</div>\n</ion-header>\n\n<ion-content padding>\n<ion-row>\n  <ion-item>\n      <button ion-button round float-left  (click)="editGroup(groupName)"><ion-icon name="create"></ion-icon> EDIT GROUP</button>\n      <button ion-button round float-right  (click)="editGroup(\'\')"><ion-icon name="add"></ion-icon> ADD NEW GROUP</button>\n  </ion-item>\n</ion-row>\n\n  <div> <h6 style="background-color:lightgray; text-align: center;">NEW INVITATION</h6> </div>\n  <ion-item>\n    <ion-input [(ngModel)]="newMember.name" placeholder="New Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label>New Member Privilege</ion-label>\n    <ion-select  [(ngModel)]="newMember.privilege">\n      <ion-option value="member">Regular Member</ion-option>\n      <ion-option value="admin">Admin</ion-option>\n    </ion-select>\n  </ion-item>\n  <ion-item>\n    <!--ion-label stacked>How good of a budgetter are you?</ion-label-->\n    <ion-input [(ngModel)]="newMember.email" placeholder="New Member EMAIL"></ion-input>\n  </ion-item>\n  <ion-item>\n  <button ion-button round float-left (click)="sendInvite()">SEND INVITE</button>\n  <button ion-button round float-right (click)="showInvites()">SHOW INVITEs</button>\n  </ion-item>\n\n  <h6 style="background-color:lightgray;">MEMBERS LIST FOR: {{this.groupName}}</h6> \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h6>{{ mmbr.name }}</h6>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/invitations/invitations.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Events */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* ModalController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__["a" /* MainHubProvider */]])
 ], InvitationsPage);

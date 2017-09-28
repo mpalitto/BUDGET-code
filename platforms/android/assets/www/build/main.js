@@ -215,7 +215,7 @@ var SocketProvider = (function () {
     function SocketProvider(http) {
         var _this = this;
         this.http = http;
-        this.socketHost = "http://192.168.1.60:3000";
+        this.socketHost = "http://192.168.1.44:3000";
         // alert('Hello SocketProvider Provider');
         this.socket = __WEBPACK_IMPORTED_MODULE_3_socket_io_client__["connect"](this.socketHost);
         this.socket.on('connect', function () {

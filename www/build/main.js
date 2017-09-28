@@ -190,8 +190,9 @@ webpackAsyncContext.id = 194;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_socket_io_client__ = __webpack_require__(306);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_socket_io_client__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ionic_angular__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_socket_io_client__ = __webpack_require__(306);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_socket_io_client___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_socket_io_client__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -204,6 +205,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 /*
   Generated class for the SocketProvider provider.
 
@@ -212,14 +214,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 */
 
 var SocketProvider = (function () {
-    function SocketProvider(http) {
+    function SocketProvider(events, http) {
         var _this = this;
+        this.events = events;
         this.http = http;
-        this.socketHost = "http://192.168.1.60:3000";
+        this.socketHost = "http://192.168.1.44:3000";
         // alert('Hello SocketProvider Provider');
-        this.socket = __WEBPACK_IMPORTED_MODULE_3_socket_io_client__["connect"](this.socketHost);
+        this.socket = __WEBPACK_IMPORTED_MODULE_4_socket_io_client__["connect"](this.socketHost);
         this.socket.on('connect', function () {
             alert('socket connection SUCCESS ' + _this.socket.connected);
+            _this.socket.on('invites', function (msg) {
+                _this.events.publish('invites', msg);
+                // alert('invites: '+JSON.stringify(msg));
+            });
             //this.socket.on('message', (msg) => {
             //  alert('msg received from:' + msg.from + ' cmd: ' + msg.cmd);
             //});
@@ -227,15 +234,17 @@ var SocketProvider = (function () {
         });
     }
     SocketProvider.prototype.send = function (cmd, data) {
+        alert('sending :  ' + JSON.stringify(data));
         this.socket.emit(cmd, data);
     };
     return SocketProvider;
 }());
 SocketProvider = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["b" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["b" /* Events */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["a" /* Http */]) === "function" && _b || Object])
 ], SocketProvider);
 
+var _a, _b;
 //# sourceMappingURL=socket.js.map
 
 /***/ }),

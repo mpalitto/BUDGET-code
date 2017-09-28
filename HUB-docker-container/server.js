@@ -118,6 +118,7 @@ io.on('connection', function(socket){
       if (err) {
         return console.error(err.message);
       }
+   io.sockets.emit('invites', row);
       return row
          ? console.log('FOUND! ', row.userID, row.invites)
          : console.log(`No INVITE found for: ${user.userID}`);

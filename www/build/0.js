@@ -89,6 +89,12 @@ var TabsPage = (function () {
             _this.currentGroupID = id;
             _this.events.publish('change-group', _this.currentGroupID, _this.groupNames[_this.currentGroupID], _this.amIadmin[_this.currentGroupID]);
         });
+        this.events.subscribe('invites', function (invites) {
+            alert('INVITES sub' + JSON.stringify(invites));
+            var modal = _this.modalCtrl.create('alerts', { groupName: invites });
+            modal.onDidDismiss(function (data) { });
+            modal.present();
+        });
         this.events.subscribe('editGRP', function (gn) {
             _this.editGroup(gn);
         });
