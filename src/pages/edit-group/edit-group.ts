@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ViewController, IonicPage, NavController, NavParams } from 'ionic-angular';
 
 /**
  * Generated class for the EditGroupPage page.
@@ -15,11 +15,23 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class EditGroupPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  groupName = '';
+  newName = '';
+
+  constructor(public viewCtrl: ViewController, public navCtrl: NavController, public params: NavParams) {
+    this.groupName = params.get('groupName');
+    this.newName = this.groupName;
+    // alert('group: '+ this.groupName);
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad EditGroupPage');
+  // ionViewDidLoad() {
+  //   alert('ionViewDidLoad EditGroupPage');
+  // }
+
+  buttonPressed(button) {
+    let data = { 'button': button, 'newName': this.newName };
+    this.viewCtrl.dismiss(data);
   }
+
 
 }

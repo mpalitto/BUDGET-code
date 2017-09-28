@@ -39,12 +39,12 @@ export class DatabaseProvider {
           this.database = db;
           this.storage.get('database_filled').then(val => {
             if (val) {
-	       alert('DB was already FILLED');
+	       // alert('DB was already FILLED');
               this.databaseReady.next(true);
               observer.next(true);
 	      observer.complete();
             } else {
-	       alert('FILLING the DB');
+	       // alert('FILLING the DB');
 	      this.fillDatabase().subscribe(val => {
 	        if (val) {
 	          // alert('DB has been filled');
@@ -85,7 +85,7 @@ export class DatabaseProvider {
     return this.database.executeSql("INSERT INTO membersANDgroups (groupID, groupName, email, name, privilege, score) VALUES (?, ?, ?, ?, ?, ?)", data).then(data => {
       return data;
     }, err => {
-      console.log('Error: ', err);
+      alert('Error: '+JSON.stringify(err));
       return err;
     });
   }
@@ -136,6 +136,39 @@ export class DatabaseProvider {
     });
   }
  
+  updateGroupName(groupID, groupName) {
+    // alert(groupID+" --> "+groupName);
+    return this.database.executeSql("UPDATE membersANDgroups SET groupName = '"+groupName+"' WHERE groupID = '" + groupID + "'", []).then((data) => {
+      // alert('update: '+data);
+      // alert('group name: '+groupName);
+      return groupName;
+    }, err => {
+      console.log('Error: ', err);
+      return [];
+    });
+  }
+
+  addNewUser(nick, email, groupID, groupName, pass) {
+    return this.database.executeSql("INSERT INTO UsersSettings (nick, email, defaultGroupID, defaultGroupName, pass) VALUES (?, ?, ?, ?, ?)", [nick, email, groupID, groupName, pass]).then((data) => {
+      // alert('Success: '+ JSON.stringify(data));
+      return data;
+    }, err => {
+      alert('Error: '+ JSON.stringify(err));
+      return err;
+    });
+  }
+
+  getUserInfo(email) {
+    return this.database.executeSql("SELECT * FROM UsersSettings WHERE email = '"+email+"'", []).then((data) => {
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          // alert(JSON.stringify(data.rows.item(i)));
+        }
+      }
+      return data.rows.item(0);
+    });
+  }
+
   getDatabaseState() {
     return this.databaseReady.asObservable();
   }

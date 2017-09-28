@@ -3,42 +3,37 @@
 </ion-header>
 
 <ion-content padding>
-    <ion-row>
-  <ion-item col-9>
-    <ion-label>GROUP</ion-label>
-    <ion-select  [(ngModel)]="group" (ionChange)="selectGroup()">
-      <ion-option value='ADDnew NA'>+ ADD</ion-option>
-      <ion-option *ngFor='let grp of groups' value="{{grp.groupName}} {{grp.groupID}}">{{grp.groupName}}</ion-option>
-      <!--ion-option *ngFor='let grp of groups' [value]="'{ groupID: ' + grp.groupID + ', groupName: ' + grp.groupID + '}'">{{grp.groupName}}</ion-option-->
-    </ion-select>
-  </ion-item>
-  <ion-item col-3>
-      <button ion-button icon-only small float-right  (click)="editGroup(group)"><ion-icon name="create"></ion-icon></button>
-  </ion-item>
-    </ion-row>
+<ion-row>
   <ion-item>
-    <!--ion-label stacked>What's your name?</ion-label-->
-    <ion-input [(ngModel)]="member.name" placeholder="New Member Name"></ion-input>
+      <button ion-button round float-left  (click)="editGroup(groupName)"><ion-icon name="create"></ion-icon> EDIT GROUP</button>
+      <button ion-button round float-right  (click)="editGroup('')"><ion-icon name="add"></ion-icon> ADD NEW GROUP</button>
+  </ion-item>
+</ion-row>
+
+  <div> <h6 style="background-color:lightgray; text-align: center;">NEW INVITATION</h6> </div>
+  <ion-item>
+    <ion-input [(ngModel)]="newMember.name" placeholder="New Member Name"></ion-input>
   </ion-item>
   <ion-item>
-    <!--ion-label stacked>What's your privilege?</ion-label-->
-    <!--ion-input [(ngModel)]="member.privilege" placeholder="Admin or regular Member?"></ion-input-->
     <ion-label>New Member Privilege</ion-label>
-    <ion-select  [(ngModel)]="member.privilege">
+    <ion-select  [(ngModel)]="newMember.privilege">
       <ion-option value="member">Regular Member</ion-option>
       <ion-option value="admin">Admin</ion-option>
     </ion-select>
   </ion-item>
   <ion-item>
     <!--ion-label stacked>How good of a budgetter are you?</ion-label-->
-    <ion-input [(ngModel)]="member.email" placeholder="New Member EMAIL"></ion-input>
+    <ion-input [(ngModel)]="newMember.email" placeholder="New Member EMAIL"></ion-input>
   </ion-item>
-  <button ion-button full (click)="send_invite()">SEND INVITE</button>
+  <ion-item>
+  <button ion-button round float-left (click)="sendInvite()">SEND INVITE</button>
+  <button ion-button round float-right (click)="showInvites()">SHOW INVITEs</button>
+  </ion-item>
 
-  <div>CURRENT MEMBER LIST FOR: {{group.groupName}}</div> 
+  <h6 style="background-color:lightgray;">MEMBERS LIST FOR: {{this.groupName}}</h6> 
   <ion-list>
     <ion-item *ngFor="let mmbr of members">
-      <h2>{{ mmbr.name }}</h2>
+      <h6>{{ mmbr.name }}</h6>
       <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>
     </ion-item>
   </ion-list>

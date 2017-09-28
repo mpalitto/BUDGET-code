@@ -18,7 +18,7 @@ export class SocketProvider {
   socket: any;
 
   constructor(public http: Http) {
-    alert('Hello SocketProvider Provider');
+    // alert('Hello SocketProvider Provider');
     this.socket = io.connect(this.socketHost);
     this.socket.on('connect', () => {
       alert('socket connection SUCCESS '+ this.socket.connected);

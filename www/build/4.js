@@ -1,14 +1,14 @@
 webpackJsonp([4],{
 
-/***/ 620:
+/***/ 621:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InvitationsPageModule", function() { return InvitationsPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__invitations__ = __webpack_require__(629);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__invitations__ = __webpack_require__(630);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -26,7 +26,7 @@ var InvitationsPageModule = (function () {
 InvitationsPageModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["L" /* NgModule */])({
         declarations: [__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */]],
-        imports: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */])],
+        imports: [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */])],
         entryComponents: [__WEBPACK_IMPORTED_MODULE_2__invitations__["a" /* InvitationsPage */]]
     })
 ], InvitationsPageModule);
@@ -35,16 +35,14 @@ InvitationsPageModule = __decorate([
 
 /***/ }),
 
-/***/ 629:
+/***/ 630:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InvitationsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_database_database__ = __webpack_require__(275);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_auth_service_auth_service__ = __webpack_require__(274);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_socket_socket__ = __webpack_require__(276);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__ = __webpack_require__(277);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -58,103 +56,107 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
-
-//import { NewGroupPage } from '../new-group/new-group';
 var InvitationsPage = (function () {
-    function InvitationsPage(auth, WS, modalCtrl, navCtrl, databaseprovider) {
+    function InvitationsPage(events, modalCtrl, navCtrl, mainHUB) {
         var _this = this;
-        this.auth = auth;
-        this.WS = WS;
+        this.events = events;
         this.modalCtrl = modalCtrl;
         this.navCtrl = navCtrl;
-        this.databaseprovider = databaseprovider;
-        this.member = { email: '', name: '', privilege: '', score: '' };
+        this.mainHUB = mainHUB;
+        this.newMember = { groupID: '', groupName: '', email: '', name: '', privilege: '', score: '' };
         this.members = []; //members for the selected group
         this.group = ""; //selected group
         this.groupID = ""; //selected group
         this.groupName = ""; //selected group
         this.groups = []; //groups which current user is part of
         this.adminGroups = []; //groups which current user is admin
-        this.me = ''; //my username which is an email address
-        this.me = this.auth.getUserInfo().email;
-        alert('current user: ' + this.me);
-        //this.databaseprovider.getDatabaseState().subscribe(rdy => {
-        this.databaseprovider.prefillDB().subscribe(function (rdy) {
-            if (rdy) {
-                //alert('user INFO: '+ this.me);
-                _this.loadMemberData();
-            }
-            else {
-                alert("DB not ready");
-                _this.loadMemberData();
-            }
+        this.me = { nick: '', email: '' }; //my username and email address
+        this.amIadmin = false; //selected group
+        this.events.subscribe('userInfo', function (nick, email) {
+            _this.me.nick = nick;
+            _this.me.email = email;
+        });
+        this.events.subscribe('addNewMember', function (groupID, groupName, nick, email, privilege, score) {
+            _this.mainHUB.addMember(groupID, groupName, email, nick, privilege, parseInt(score))
+                .then(function (data) {
+                _this.loadGroupMembers();
+            });
+        });
+        this.events.subscribe('change-group', function (groupID, groupName, amIadmin) {
+            _this.groupID = groupID;
+            _this.groupName = groupName;
+            _this.amIadmin = amIadmin;
+            _this.loadGroupMembers();
+        });
+        this.events.publish('tab2opened');
+        this.mainHUB.prefillDB().subscribe(function (rdy) {
+            _this.loadGroupMembers();
         });
     }
-    InvitationsPage.prototype.loadMemberData = function () {
+    InvitationsPage.prototype.loadGroupMembers = function () {
         var _this = this;
-        // alert("loading member data");
-        this.databaseprovider.getAllMembers(this.groupID).then(function (data) {
+        this.mainHUB.getAllMembers(this.groupID).then(function (data) {
             _this.members = data;
-            alert('members for group ' + _this.groupID + ': ' + data);
-        });
-        this.databaseprovider.getAllGroups(this.me).then(function (data) {
-            _this.groups = data;
-            alert('groups for: ' + _this.me + ' ::: ' + data);
-        });
-        this.databaseprovider.getAdminGroups(this.me).then(function (data) {
-            _this.adminGroups = data;
-            alert('admin groups for: ' + _this.me + ' ::: ' + data);
+            // alert('members for group ' + this.groupID + ': ' + data);
         });
     };
-    InvitationsPage.prototype.addMember = function () {
-        var _this = this;
-        this.databaseprovider.addMember(this.member['groupID'], this.member['groupName'], this.member['email'], this.member['name'], this.member['privilege'], parseInt(this.member['score']))
-            .then(function (data) {
-            _this.loadMemberData();
-        });
-        //this.member = {};
+    InvitationsPage.prototype.editGroup = function (gn) {
+        this.events.publish('editGRP', gn);
     };
-    InvitationsPage.prototype.selectGroup = function () {
-        var _this = this;
-        this.groupID = this.group.replace(/^.* /, "");
-        this.groupName = this.group.replace(/(^.* ).*/, "$1");
-        if (/^\ADDnew/.test(this.groupName)) {
-            var modal = this.modalCtrl.create('NewGroupPage');
-            modal.present();
-        }
-        else {
-            alert(this.groupName + ' has been selected -- GROUPID: ' + this.groupID);
-            this.databaseprovider.getAllMembers(this.groupID).then(function (data) {
-                _this.members = data;
-                alert('members for group ' + _this.groupID + ': ' + data);
-            });
-        }
-    };
-    ;
-    InvitationsPage.prototype.editGroup = function () {
-        var modal = this.modalCtrl.create('EditGroupPage');
-        modal.present();
-    };
+    //   editGroup(gn) {
+    //       let modal = this.modalCtrl.create('EditGroupPage', {groupName: gn});
+    //       modal.onDidDismiss(data => {
+    //         // alert(JSON.stringify(data)); alert('NEW NAME: '+data.newName);
+    // 
+    //         // UPDATE
+    //         if (data.button === 'update') {
+    //           this.mainHUB.updateGroupName(this.groupID, data.newName).then(newName => { 
+    //             alert(this.groupName+' has been RENAMED to: '+ newName); 
+    //             this.loadGroupMembers();
+    //             this.groupName = newName;
+    //             this.events.publish('grpUpdated', this.groupID, this.groupName);
+    //           });
+    // 
+    //         // ADD NEW GROUP
+    //         } else if (data.button === 'create') {
+    //           this.groupName = data.newName;
+    //           this.groupID = this.me.email + '-' + data.newName.replace(/ /g,'-');
+    //           // alert('new groupID: '+ this.groupID);
+    //           this.events.publish('newGrpAdded', this.groupID, this.groupName);
+    //           this.newMember['groupID'] = this.groupID;
+    //           this.newMember['groupName'] = data.newName;
+    //           this.newMember['name'] = this.me.nick;
+    //           this.newMember['email'] = this.me.email;
+    //           this.newMember['privilege'] = 'admin';
+    //           this.newMember['score'] = '6';
+    //           this.addMember();
+    //           // alert(JSON.stringify(this.newMember));
+    //         };
+    //       });
+    //       modal.present();
+    //   }
     InvitationsPage.prototype.sendInvite = function () {
         var invite = {
-            FROM: this.me,
-            FOR: this.member.email,
+            FROM: this.me.email,
+            FOR: this.newMember.email,
             GROUP: this.groupID
         };
-        this.WS.send('invite', invite);
+        this.mainHUB.send('invite', invite);
+    };
+    InvitationsPage.prototype.showInvites = function () {
+        alert('this selection will show all invites history');
     };
     return InvitationsPage;
 }());
 InvitationsPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
+    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-invitations',template:/*ion-inline-start:"/root/BUDGET/src/pages/invitations/invitations.html"*/'<ion-header>\n  <div class="PADDING-TOP">group</div>\n</ion-header>\n\n<ion-content padding>\n    <ion-row>\n  <ion-item col-9>\n    <ion-label>GROUP</ion-label>\n    <ion-select  [(ngModel)]="group" (ionChange)="selectGroup()">\n      <ion-option value=\'ADDnew NA\'>+ ADD</ion-option>\n      <ion-option *ngFor=\'let grp of groups\' value="{{grp.groupName}} {{grp.groupID}}">{{grp.groupName}}</ion-option>\n      <!--ion-option *ngFor=\'let grp of groups\' [value]="\'{ groupID: \' + grp.groupID + \', groupName: \' + grp.groupID + \'}\'">{{grp.groupName}}</ion-option-->\n    </ion-select>\n  </ion-item>\n  <ion-item col-3>\n      <button ion-button icon-only small float-right  (click)="editGroup(group)"><ion-icon name="create"></ion-icon></button>\n  </ion-item>\n    </ion-row>\n  <ion-item>\n    <!--ion-label stacked>What\'s your name?</ion-label-->\n    <ion-input [(ngModel)]="member.name" placeholder="New Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <!--ion-label stacked>What\'s your privilege?</ion-label-->\n    <!--ion-input [(ngModel)]="member.privilege" placeholder="Admin or regular Member?"></ion-input-->\n    <ion-label>New Member Privilege</ion-label>\n    <ion-select  [(ngModel)]="member.privilege">\n      <ion-option value="member">Regular Member</ion-option>\n      <ion-option value="admin">Admin</ion-option>\n    </ion-select>\n  </ion-item>\n  <ion-item>\n    <!--ion-label stacked>How good of a budgetter are you?</ion-label-->\n    <ion-input [(ngModel)]="member.email" placeholder="New Member EMAIL"></ion-input>\n  </ion-item>\n  <button ion-button full (click)="send_invite()">SEND INVITE</button>\n\n  <div>CURRENT MEMBER LIST FOR: {{group.groupName}}</div> \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h2>{{ mmbr.name }}</h2>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/invitations/invitations.html"*/
+        selector: 'page-invitations',template:/*ion-inline-start:"/root/BUDGET/src/pages/invitations/invitations.html"*/'<ion-header>\n  <div class="PADDING-TOP">group</div>\n</ion-header>\n\n<ion-content padding>\n<ion-row>\n  <ion-item>\n      <button ion-button round float-left  (click)="editGroup(groupName)"><ion-icon name="create"></ion-icon> EDIT GROUP</button>\n      <button ion-button round float-right  (click)="editGroup(\'\')"><ion-icon name="add"></ion-icon> ADD NEW GROUP</button>\n  </ion-item>\n</ion-row>\n\n  <div> <h6 style="background-color:lightgray; text-align: center;">NEW INVITATION</h6> </div>\n  <ion-item>\n    <ion-input [(ngModel)]="newMember.name" placeholder="New Member Name"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label>New Member Privilege</ion-label>\n    <ion-select  [(ngModel)]="newMember.privilege">\n      <ion-option value="member">Regular Member</ion-option>\n      <ion-option value="admin">Admin</ion-option>\n    </ion-select>\n  </ion-item>\n  <ion-item>\n    <!--ion-label stacked>How good of a budgetter are you?</ion-label-->\n    <ion-input [(ngModel)]="newMember.email" placeholder="New Member EMAIL"></ion-input>\n  </ion-item>\n  <ion-item>\n  <button ion-button round float-left (click)="sendInvite()">SEND INVITE</button>\n  <button ion-button round float-right (click)="showInvites()">SHOW INVITEs</button>\n  </ion-item>\n\n  <h6 style="background-color:lightgray;">MEMBERS LIST FOR: {{this.groupName}}</h6> \n  <ion-list>\n    <ion-item *ngFor="let mmbr of members">\n      <h6>{{ mmbr.name }}</h6>\n      <p>{{ mmbr.privilege }} SCORE: {{ mmbr.score }}/10</p>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"/root/BUDGET/src/pages/invitations/invitations.html"*/
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_3__providers_auth_service_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_auth_service_auth_service__["a" /* AuthService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__providers_socket_socket__["a" /* SocketProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__providers_socket_socket__["a" /* SocketProvider */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ModalController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2__providers_database_database__["a" /* DatabaseProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_database_database__["a" /* DatabaseProvider */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Events */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["b" /* Events */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* ModalController */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavController */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__["a" /* MainHubProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_main_hub_main_hub__["a" /* MainHubProvider */]) === "function" && _d || Object])
 ], InvitationsPage);
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d;
 //# sourceMappingURL=invitations.js.map
 
 /***/ })

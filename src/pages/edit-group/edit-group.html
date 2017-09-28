@@ -7,12 +7,19 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>EditGroupPage</ion-title>
+    <ion-title>Edit Group</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
+  <ion-item>
+    <ion-label stacked>Group Name</ion-label>
+    <ion-input [(ngModel)]="newName" placeholder="Enter Group Name">{{groupName}}</ion-input>
+  </ion-item>
 
+  <button ion-button round (click)="buttonPressed('cancel')">CANCEL</button>
+  <button ion-button round (click)="buttonPressed('update')" *ngIf="groupName !== ''">UPDATE</button>
+  <button ion-button round (click)="buttonPressed('create')" *ngIf="groupName === ''">CREATE NEW</button>
 </ion-content>
