@@ -34,9 +34,11 @@ export class TabsPage {
 
   constructor(private events: Events, public modalCtrl: ModalController, public navCtrl: NavController, public navParams: NavParams, private mainHUB: MainHubProvider) {
 
+    //store data passed by the login page
     this.userNick = navParams.get('nick');
     this.user = navParams.get('email');
 
+    //subscribe to get data when new group is added
     this.events.subscribe('newGrpAdded', (id, name) => {
       this.groupIDs.push(id);
       this.groupNames[id] = name;
@@ -45,10 +47,12 @@ export class TabsPage {
       this.events.publish('change-group', this.currentGroupID, this.groupNames[this.currentGroupID], this.amIadmin[this.currentGroupID]);
     });
 
+    //subscribe to get data when group is edited
     this.events.subscribe('editGRP', (gn) => {
       this.editGroup(gn);
     });
 
+    //subscribe to get data when tab2 is opened
     this.events.subscribe('tab2opened', () => {
       this.events.publish('userInfo', this.userNick, this.user);
       this.events.publish('change-group', this.currentGroupID, this.groupNames[this.currentGroupID], this.amIadmin[this.currentGroupID]);
