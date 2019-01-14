@@ -1,3 +1,8 @@
+//This is the APP main page as it allows navigation between pages
+//It is the 1st page called after log-in
+//When thi page is loaded the connection to the HUB is established
+//It will hold the APP data structure
+
 import { Component } from '@angular/core';
 import { Events, ModalController, IonicPage, NavController, NavParams } from 'ionic-angular';
 import { MainHubProvider } from './../../providers/main-hub/main-hub';
